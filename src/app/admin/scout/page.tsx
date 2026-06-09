@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Header from "@/components/Header";
+import AdminHeader from "@/components/admin/AdminHeader";
 import { CATEGORIES, type Category } from "@/lib/config";
 import { DAILY_SCOUT_GOAL, SCOUT_SOURCES } from "@/lib/scoutSources";
 import {
@@ -105,7 +105,7 @@ export default function ScoutPage() {
 
   return (
     <>
-      <Header />
+      <AdminHeader />
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="mb-8">
           <Link href="/admin" className="text-sm text-zinc-500 hover:text-cyan-400">

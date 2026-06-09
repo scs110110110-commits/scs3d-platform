@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { WHATSAPP_NUMBER } from "@/lib/config";
 
 export default function Header() {
   return (
@@ -20,20 +21,17 @@ export default function Header() {
           <Link href="/" className="text-sm text-zinc-400 transition hover:text-white">
             Catalog
           </Link>
-          <Link href="/admin/scout" className="text-sm text-zinc-400 transition hover:text-violet-400">
-            Trend Scout
-          </Link>
-          <Link href="/admin" className="text-sm text-zinc-400 transition hover:text-cyan-400">
-            Admin
-          </Link>
+          <span className="text-sm text-zinc-600">📍 Kitchener-Waterloo</span>
         </nav>
 
-        <Link
-          href="/admin/scout"
-          className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-violet-500"
+        <a
+          href={`https://wa.me/${WHATSAPP_NUMBER}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500"
         >
-          + Scout
-        </Link>
+          💬 WhatsApp
+        </a>
       </div>
     </header>
   );

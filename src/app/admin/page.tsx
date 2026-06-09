@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ProductForm, { emptyProduct } from "@/components/admin/ProductForm";
-import Header from "@/components/Header";
+import AdminHeader from "@/components/admin/AdminHeader";
 import {
   exportProductsJson,
   getProducts,
@@ -56,7 +56,7 @@ export default function AdminPage() {
 
   return (
     <>
-      <Header />
+      <AdminHeader />
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
