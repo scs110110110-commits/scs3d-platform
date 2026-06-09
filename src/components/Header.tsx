@@ -13,7 +13,7 @@ export default function Header() {
           </div>
           <div>
             <div className="text-lg font-bold text-white">SCS3D</div>
-            <div className="text-xs text-zinc-500">Trending Prints</div>
+            <div className="text-xs text-zinc-500">3D Design &amp; Printing</div>
           </div>
         </Link>
 

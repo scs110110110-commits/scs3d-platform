@@ -1,22 +1,22 @@
 import { BRAND_NAME, BRAND_URL, WHATSAPP_NUMBER } from "./config";
 import type { Product } from "./types";
 
+export const ORDER_BUTTON_LABEL = "Order on WhatsApp";
+
 export function buildOrderMessage(product: Product): string {
   return [
-    `🛒 *${BRAND_NAME} SİPARİŞ TALEBİ*`,
-    `🌐 ${BRAND_URL}`,
+    `Hi ${BRAND_NAME}! I'd like to place an order from ${BRAND_URL}:`,
     "",
-    `📦 *Ürün:* ${product.title}`,
-    `💰 *Fiyat:* $${product.price} CAD`,
-    `🧱 *Malzeme:* ${product.material}`,
-    `📂 *Kategori:* ${product.category}`,
+    `Order: ${product.title}`,
+    `Material: ${product.material}`,
+    `Category: ${product.category}`,
     "",
-    `📝 ${product.shortDescription}`,
+    product.shortDescription,
     "",
-    "Merhaba! Bu ürünü sipariş etmek istiyorum.",
-    "Renk ve miktar tercihlerimi paylaşacağım.",
+    "Please send me a quote for this item.",
+    "I'll share my color and quantity preferences in this chat.",
     "",
-    "📍 Kitchener-Waterloo — Local pickup available",
+    "Local pickup available in Kitchener-Waterloo.",
   ].join("\n");
 }
 

@@ -2,7 +2,7 @@
 
 import { TREND_BADGES } from "@/lib/config";
 import type { Product } from "@/lib/types";
-import { openWhatsAppOrder } from "@/lib/whatsapp";
+import { ORDER_BUTTON_LABEL, openWhatsAppOrder } from "@/lib/whatsapp";
 
 interface ProductModalProps {
   product: Product | null;
@@ -47,12 +47,12 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
 
           <dl className="mb-6 grid grid-cols-2 gap-3 text-sm">
             <div>
-              <dt className="text-zinc-500">Price</dt>
-              <dd className="text-xl font-bold text-cyan-400">${product.price} CAD</dd>
-            </div>
-            <div>
               <dt className="text-zinc-500">Material</dt>
               <dd className="text-white">{product.material}</dd>
+            </div>
+            <div>
+              <dt className="text-zinc-500">Quote</dt>
+              <dd className="text-emerald-400">Request via WhatsApp</dd>
             </div>
             {product.sourceName && (
               <div className="col-span-2">
@@ -75,7 +75,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
             onClick={() => openWhatsAppOrder(product)}
             className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-4 text-lg font-semibold text-white transition hover:bg-emerald-500"
           >
-            💬 Order via WhatsApp — ${product.price} CAD
+            💬 {ORDER_BUTTON_LABEL}
           </button>
         </div>
       </div>

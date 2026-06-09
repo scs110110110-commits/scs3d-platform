@@ -5,12 +5,10 @@ export function middleware(request: NextRequest) {
   const password = process.env.ADMIN_PASSWORD;
 
   if (!password) {
-    if (process.env.NODE_ENV === "development") {
-      return NextResponse.next();
-    }
-    return new NextResponse("Admin password not configured on server.", {
-      status: 503,
-    });
+    return new NextResponse(
+      "Admin area is locked. Set ADMIN_PASSWORD in Vercel Environment Variables, then redeploy.",
+      { status: 503 }
+    );
   }
 
   const authHeader = request.headers.get("authorization");
@@ -34,5 +32,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin", "/admin/:path*"],
 };

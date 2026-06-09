@@ -80,10 +80,10 @@ export function importProductsJson(file: File): Promise<Product[]> {
         saveProducts(data);
         resolve(data);
       } catch {
-        reject(new Error("Geçersiz JSON dosyası"));
+        reject(new Error("Invalid JSON file"));
       }
     };
-    reader.onerror = () => reject(new Error("Dosya okunamadı"));
+    reader.onerror = () => reject(new Error("Could not read file"));
     reader.readAsText(file);
   });
 }

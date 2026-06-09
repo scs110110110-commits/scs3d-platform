@@ -2,7 +2,7 @@
 
 import { TREND_BADGES } from "@/lib/config";
 import type { Product } from "@/lib/types";
-import { openWhatsAppOrder } from "@/lib/whatsapp";
+import { ORDER_BUTTON_LABEL, openWhatsAppOrder } from "@/lib/whatsapp";
 
 interface ProductCardProps {
   product: Product;
@@ -56,10 +56,9 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
           {product.shortDescription}
         </p>
 
-        <div className="mb-3 flex items-center justify-between">
-          <span className="text-2xl font-bold text-cyan-400">
-            ${product.price}
-            <span className="text-sm font-normal text-zinc-500"> CAD</span>
+        <div className="mb-3 flex items-center justify-between text-sm">
+          <span className="text-zinc-400">
+            Material: <span className="text-zinc-200">{product.material}</span>
           </span>
           <span className="text-xs text-zinc-500">
             👀 {product.socialProof}+ views
@@ -81,7 +80,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
           onClick={() => openWhatsAppOrder(product)}
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 font-semibold text-white transition hover:bg-emerald-500"
         >
-          💬 Order on WhatsApp
+          💬 {ORDER_BUTTON_LABEL}
         </button>
       </div>
     </article>
