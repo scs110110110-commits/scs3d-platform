@@ -9,14 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@eslint/eslintrc": "^3.3.5",
-    "@next/swc-win32-x64-msvc": "^16.2.7",
     "fflate": "^0.8.3",
     "next": "^15.5.19",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
