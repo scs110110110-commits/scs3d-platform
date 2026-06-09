@@ -13,13 +13,13 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "SCS3D — 3D Printing & CAD Design | Instant Quote",
+  title: "SCS3D — Trending 3D Prints | Order via WhatsApp",
   description:
-    "Professional 3D printing and CAD design services in Kitchener-Waterloo. Upload your model for an instant quote or send photos for custom design.",
-  keywords: ["3D printing", "CAD design", "Kitchener", "Waterloo", "SCS3D", "instant quote"],
+    "Discover today's hottest 3D printed products. Order instantly via WhatsApp. Kitchener-Waterloo local pickup.",
+  keywords: ["3D printing", "trending", "catalog", "SCS3D", "WhatsApp order"],
   openGraph: {
-    title: "SCS3D — 3D Printing & CAD Design",
-    description: "Instant 3D print quotes and photo-to-print CAD design automation.",
+    title: "SCS3D — Trending 3D Prints",
+    description: "Daily curated trending 3D prints. Order in one tap.",
     url: "https://scs3d.com",
     siteName: "SCS3D",
   },

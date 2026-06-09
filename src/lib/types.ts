@@ -1,29 +1,44 @@
-export interface Vec3 {
-  x: number;
-  y: number;
-  z: number;
+import type { Category, TrendStatus } from "./config";
+
+export interface Product {
+  id: string;
+  title: string;
+  shortDescription: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  images: string[];
+  category: Category;
+  tags: string[];
+  trendScore: number;
+  status: TrendStatus;
+  sourceUrl?: string;
+  sourceName?: string;
+  material: string;
+  published: boolean;
+  featured: boolean;
+  socialProof: number;
+  createdAt: string;
 }
 
-export interface ModelAnalysis {
-  fileName: string;
-  fileSize: number;
-  format: "stl" | "obj" | "3mf";
-  volumeMm3: number;
-  dimensions: { x: number; y: number; z: number };
-  triangleCount: number;
-  vertexCount: number;
+export interface ScoutItem {
+  id: string;
+  title: string;
+  sourceUrl: string;
+  sourceName: string;
+  imageUrl: string;
+  notes: string;
+  trendScore: number;
+  category: Category;
+  scoutedAt: string;
+  promoted: boolean;
 }
 
-export interface PrintQuote {
-  materialCost: number;
-  setupFee: number;
-  total: number;
-  estimatedGrams: number;
-}
-
-export interface CadEstimate {
-  timeRange: string;
-  priceMin: number;
-  priceMax: number;
-  complexity: "low" | "medium" | "high";
+export interface ScoutSource {
+  id: string;
+  name: string;
+  url: string;
+  description: string;
+  icon: string;
+  checkFrequency: string;
 }

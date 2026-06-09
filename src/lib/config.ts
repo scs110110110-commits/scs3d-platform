@@ -1,32 +1,26 @@
 export const WHATSAPP_NUMBER = "15485777916";
+export const BRAND_NAME = "SCS3D";
+export const BRAND_URL = "scs3d.com";
+export const BRAND_TAGLINE = "Trending 3D Prints — Made in Kitchener-Waterloo";
 
-export const SETUP_FEE_CAD = 5;
-
-export const MATERIALS = {
-  PLA: { label: "PLA", pricePerGram: 0.05, density: 1.24 },
-  PETG: { label: "PETG", pricePerGram: 0.07, density: 1.27 },
-  TPU: { label: "TPU", pricePerGram: 0.12, density: 1.21 },
-} as const;
-
-export type MaterialKey = keyof typeof MATERIALS;
-
-export const INFILL_OPTIONS = {
-  light: { label: "Light", percent: 10 },
-  medium: { label: "Medium", percent: 20 },
-  heavy: { label: "Heavy", percent: 50 },
-} as const;
-
-export type InfillKey = keyof typeof INFILL_OPTIONS;
-
-export const FILAMENT_COLORS = [
-  { name: "Matte Black", hex: "#1a1a1a" },
-  { name: "Pure White", hex: "#f5f5f5" },
-  { name: "Signal Red", hex: "#e63946" },
-  { name: "Ocean Blue", hex: "#2563eb" },
-  { name: "Forest Green", hex: "#16a34a" },
-  { name: "Sunset Orange", hex: "#ea580c" },
-  { name: "Royal Purple", hex: "#7c3aed" },
-  { name: "Silver Grey", hex: "#9ca3af" },
-  { name: "Gold Silk", hex: "#d4a017" },
-  { name: "Transparent", hex: "#94a3b8" },
+export const CATEGORIES = [
+  "Desk & Office",
+  "Home & Decor",
+  "Automotive",
+  "Phone & Tech",
+  "Toys & Collectibles",
+  "Tools & Organizers",
+  "Outdoor & Camping",
+  "Custom Gifts",
 ] as const;
+
+export type Category = (typeof CATEGORIES)[number];
+
+export const TREND_BADGES = {
+  rising: { label: "Rising", emoji: "📈", color: "emerald" },
+  trending: { label: "Trending", emoji: "🔥", color: "orange" },
+  hot: { label: "Hot Today", emoji: "⚡", color: "red" },
+  stable: { label: "Popular", emoji: "⭐", color: "cyan" },
+} as const;
+
+export type TrendStatus = keyof typeof TREND_BADGES;
