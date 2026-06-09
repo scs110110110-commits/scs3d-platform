@@ -20,6 +20,8 @@ const today = () => new Date().toISOString().slice(0, 10);
 export default function ScoutPage() {
   const [queue, setQueue] = useState<ScoutItem[]>([]);
   const [todayCount, setTodayCount] = useState(0);
+  const [fetching, setFetching] = useState(false);
+  const [fetchError, setFetchError] = useState("");
   const [form, setForm] = useState({
     title: "",
     sourceUrl: "",
@@ -101,6 +103,51 @@ export default function ScoutPage() {
     });
   }
 
+  async function autoFetchTrending() {
+    setFetching(true);
+    setFetchError("");
+    try {
+      const res = await fetch("/api/scout/trending?limit=10", {
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Fetch failed");
+
+      const existing = getScoutQueue();
+      const newItems: ScoutItem[] = data.items.map(
+        (item: {
+          title: string;
+          sourceUrl: string;
+          sourceName: string;
+          imageUrl: string;
+          notes: string;
+          trendScore: number;
+          category: Category;
+        }) => ({
+          id: generateId(),
+          title: item.title,
+          sourceUrl: item.sourceUrl,
+          sourceName: item.sourceName,
+          imageUrl: item.imageUrl,
+          notes: item.notes,
+          trendScore: item.trendScore,
+          category: item.category,
+          scoutedAt: new Date().toISOString(),
+          promoted: false,
+        })
+      );
+
+      const merged = [...newItems, ...existing].slice(0, 50);
+      saveScoutQueue(merged);
+      setQueue(merged);
+      setTodayCount(merged.filter((i) => i.scoutedAt.startsWith(today())).length);
+    } catch (err) {
+      setFetchError(err instanceof Error ? err.message : "Auto-fetch failed");
+    } finally {
+      setFetching(false);
+    }
+  }
+
   const progress = Math.min((todayCount / DAILY_SCOUT_GOAL) * 100, 100);
 
   return (
@@ -134,6 +181,27 @@ export default function ScoutPage() {
             <p className="mt-2 text-sm text-emerald-400">🎉 Daily goal reached!</p>
           )}
         </div>
+
+        <section className="mb-10 rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-6">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-bold text-white">Auto-Fetch Rising Products</h2>
+              <p className="mt-1 text-sm text-zinc-400">
+                Pulls trending items from Reddit r/3Dprinting and Printables automatically.
+              </p>
+            </div>
+            <button
+              onClick={autoFetchTrending}
+              disabled={fetching}
+              className="rounded-xl bg-cyan-600 px-6 py-3 font-semibold text-white hover:bg-cyan-500 disabled:opacity-50"
+            >
+              {fetching ? "Fetching..." : "⚡ Fetch 10 Rising Products"}
+            </button>
+          </div>
+          {fetchError && (
+            <p className="mt-3 text-sm text-red-400">{fetchError}</p>
+          )}
+        </section>
 
         <section className="mb-10">
           <h2 className="mb-4 text-xl font-bold text-white">Research Sources</h2>

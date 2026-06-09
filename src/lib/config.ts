@@ -2,7 +2,7 @@ export const WHATSAPP_NUMBER = "15485777916";
 export const BRAND_NAME = "SCS3D";
 export const BRAND_URL = "scs3d.com";
 export const BRAND_TAGLINE =
-  "Your Kitchener-Waterloo 3D design and printing service — trending prints, custom CAD, WhatsApp ordering.";
+  "Professional 3D printing and custom CAD design — browse trending prints or bring your own idea.";
 
 export const CATEGORIES = [
   "Desk & Office",

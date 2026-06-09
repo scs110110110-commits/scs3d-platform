@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import CatalogPage from "@/components/catalog/CatalogPage";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
-import SeoSection from "@/components/seo/SeoSection";
 import { SEO_DESCRIPTION, SEO_TITLE } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -16,7 +15,6 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <CatalogPage />
-        <SeoSection />
       </main>
       <Footer />
     </>

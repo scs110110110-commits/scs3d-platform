@@ -43,7 +43,7 @@ export default function CatalogPage() {
     <>
       <CatalogHero productCount={products.length} hotCount={hotCount} />
 
-      <div className="mx-auto max-w-6xl px-4 pb-24 sm:px-6">
+      <div id="catalog" className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
         <CatalogFilters
           activeCategory={category}
           onCategoryChange={setCategory}
