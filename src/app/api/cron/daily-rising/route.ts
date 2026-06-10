@@ -1,13 +1,16 @@
 import { NextResponse } from "next/server";
 import { verifyCronRequest } from "@/lib/cronAuth";
-import { computeRising } from "@/lib/risingEngine";
+import { computeRising, fillReportItems } from "@/lib/risingEngine";
 import {
   buildSnapshot,
   isSnapshotStorageConfigured,
   loadSnapshot,
   saveSnapshot,
 } from "@/lib/scoutSnapshot";
-import { fetchAllTrending } from "@/lib/trendFetcher";
+import {
+  DAILY_REPORT_TOTAL,
+  fetchBalancedTrending,
+} from "@/lib/trendFetcher";
 import {
   formatDailyRisingReport,
   isTelegramConfigured,
@@ -23,7 +26,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const items = await fetchAllTrending(20);
+    const items = await fetchBalancedTrending();
     if (items.length === 0) {
       return NextResponse.json(
         { error: "No trending items fetched from Cults3D or Printables" },
@@ -32,14 +35,20 @@ export async function GET(request: Request) {
     }
 
     const previous = await loadSnapshot();
-    const rising = computeRising(previous, items, 5);
+    const risingRaw = computeRising(previous, items, DAILY_REPORT_TOTAL);
+    const rising = fillReportItems(risingRaw, items, DAILY_REPORT_TOTAL);
     const snapshot = buildSnapshot(items);
     const snapshotSaved = await saveSnapshot(snapshot);
+
+    const cultsCount = rising.filter((item) => item.sourceName === "Cults3D").length;
+    const printablesCount = rising.filter((item) => item.sourceName === "Printables").length;
 
     const report = formatDailyRisingReport(rising, {
       hasBaseline: Boolean(previous),
       snapshotSaved,
-      fetchedCount: items.length,
+      fetchedCount: rising.length,
+      cultsCount,
+      printablesCount,
     });
 
     let telegramSent = false;

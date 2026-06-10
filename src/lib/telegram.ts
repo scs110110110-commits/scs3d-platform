@@ -21,6 +21,8 @@ export function formatDailyRisingReport(
     hasBaseline: boolean;
     snapshotSaved: boolean;
     fetchedCount: number;
+    cultsCount: number;
+    printablesCount: number;
   }
 ): string {
   const date = new Date().toISOString().slice(0, 10);
@@ -40,18 +42,39 @@ export function formatDailyRisingReport(
   if (items.length === 0) {
     lines.push("No rising items detected today.");
   } else {
-    items.forEach((item, index) => {
-      lines.push(
-        `${index + 1}. ${item.title}`,
-        `   ${item.sourceName} · score ${Math.round(item.trendScore)} · ${risingLabel(item)}`,
-        `   ${item.sourceUrl}`,
-        ""
-      );
-    });
+    const cults = items.filter((item) => item.sourceName === "Cults3D");
+    const printables = items.filter((item) => item.sourceName === "Printables");
+
+    let index = 0;
+    if (cults.length > 0) {
+      lines.push(`🔥 Cults3D (${cults.length})`, "");
+      for (const item of cults) {
+        index += 1;
+        lines.push(
+          `${index}. ${item.title}`,
+          `   score ${Math.round(item.trendScore)} · ${risingLabel(item)}`,
+          `   ${item.sourceUrl}`,
+          ""
+        );
+      }
+    }
+
+    if (printables.length > 0) {
+      lines.push(`🖨️ Printables (${printables.length})`, "");
+      for (const item of printables) {
+        index += 1;
+        lines.push(
+          `${index}. ${item.title}`,
+          `   score ${Math.round(item.trendScore)} · ${risingLabel(item)}`,
+          `   ${item.sourceUrl}`,
+          ""
+        );
+      }
+    }
   }
 
   lines.push(
-    `Fetched ${options.fetchedCount} items from Cults3D + Printables.`,
+    `Total: ${options.fetchedCount} links (${options.cultsCount} Cults3D + ${options.printablesCount} Printables).`,
     options.snapshotSaved
       ? "Snapshot saved for tomorrow's comparison."
       : "⚠️ Snapshot not saved — add Vercel KV / Upstash env vars.",

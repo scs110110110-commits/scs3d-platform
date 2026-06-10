@@ -93,6 +93,31 @@ export async function fetchPrintablesTrending(limit = 10): Promise<FetchedTrendI
   }
 }
 
+export const DAILY_REPORT_PER_SITE = 5;
+export const DAILY_REPORT_TOTAL = DAILY_REPORT_PER_SITE * 2;
+
+/** 5 from Cults3D + 5 from Printables = 10 links for daily report */
+export async function fetchBalancedTrending(
+  perSite = DAILY_REPORT_PER_SITE
+): Promise<FetchedTrendItem[]> {
+  const [cults, printables] = await Promise.all([
+    fetchCults3dTrending(perSite).catch(() => [] as FetchedTrendItem[]),
+    fetchPrintablesTrending(perSite),
+  ]);
+
+  const merged = [
+    ...cults.slice(0, perSite),
+    ...printables.slice(0, perSite),
+  ];
+
+  if (merged.length >= perSite * 2) return merged;
+
+  const seen = new Set(merged.map((item) => item.sourceUrl));
+  const extras = [...cults, ...printables].filter((item) => !seen.has(item.sourceUrl));
+
+  return [...merged, ...extras].slice(0, perSite * 2);
+}
+
 export async function fetchAllTrending(limit = 10): Promise<FetchedTrendItem[]> {
   const [cults, printables] = await Promise.all([
     fetchCults3dTrending(limit).catch(() => [] as FetchedTrendItem[]),

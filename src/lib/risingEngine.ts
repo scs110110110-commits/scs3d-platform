@@ -10,7 +10,7 @@ export interface RisingItem extends FetchedTrendItem {
   previousRank: number | null;
 }
 
-const DEFAULT_TOP = 5;
+const DEFAULT_TOP = 10;
 
 export function computeRising(
   previous: ScoutSnapshot | null,
@@ -69,4 +69,39 @@ export function computeRising(
     .filter((item) => item.isNew || item.rankDelta > 0 || item.scoreDelta > 0)
     .sort((a, b) => b.risingScore - a.risingScore)
     .slice(0, topN);
+}
+
+export function fillReportItems(
+  rising: RisingItem[],
+  pool: FetchedTrendItem[],
+  count = DEFAULT_TOP
+): RisingItem[] {
+  const seen = new Set<string>();
+  const result: RisingItem[] = [];
+
+  for (const item of rising) {
+    if (result.length >= count) break;
+    const key = itemKey(item.sourceUrl);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(item);
+  }
+
+  for (const item of pool) {
+    if (result.length >= count) break;
+    const key = itemKey(item.sourceUrl);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push({
+      ...item,
+      risingScore: item.trendScore,
+      rankDelta: 0,
+      scoreDelta: 0,
+      isNew: true,
+      currentRank: result.length + 1,
+      previousRank: null,
+    });
+  }
+
+  return result;
 }

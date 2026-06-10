@@ -205,8 +205,8 @@ export default function ScoutPage() {
         <section className="mb-10 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6">
           <h2 className="text-xl font-bold text-white">Daily Telegram Report (Vercel Cron)</h2>
           <p className="mt-1 text-sm text-zinc-400">
-            Every morning: fetch Cults3D + Printables, compare with yesterday, send top 5 rising
-            links to Telegram. You add photos manually here.
+            Every morning: 5 Cults3D + 5 Printables links (10 total), compare with yesterday,
+            send to Telegram. You add photos manually here.
           </p>
           {cronStatus ? (
             <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
