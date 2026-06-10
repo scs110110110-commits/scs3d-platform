@@ -1,5 +1,4 @@
-import { Redis } from "@upstash/redis";
-import { getRuntimeEnv } from "@/lib/env";
+import { getRedis, isKvConfigured } from "@/lib/kv";
 import type { FetchedTrendItem } from "@/lib/trendFetcher";
 
 const SNAPSHOT_KEY = "scs3d:scout:snapshot";
@@ -26,15 +25,8 @@ export function itemKey(sourceUrl: string): string {
   return sourceUrl.trim().toLowerCase().replace(/\/$/, "");
 }
 
-function getRedis(): Redis | null {
-  const url = getRuntimeEnv("KV_REST_API_URL", "UPSTASH_REDIS_REST_URL");
-  const token = getRuntimeEnv("KV_REST_API_TOKEN", "UPSTASH_REDIS_REST_TOKEN");
-  if (!url || !token) return null;
-  return new Redis({ url, token });
-}
-
 export function isSnapshotStorageConfigured(): boolean {
-  return getRedis() !== null;
+  return isKvConfigured();
 }
 
 export function buildSnapshot(items: FetchedTrendItem[]): ScoutSnapshot {

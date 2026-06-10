@@ -6,10 +6,9 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import { CATEGORIES, type Category } from "@/lib/config";
 import { DAILY_SCOUT_GOAL, SCOUT_SOURCES } from "@/lib/scoutSources";
 import {
+  fetchAdminProducts,
   generateId,
-  getProducts,
   getScoutQueue,
-  loadSeedProducts,
   saveProducts,
   saveScoutQueue,
 } from "@/lib/storage";
@@ -89,8 +88,9 @@ export default function ScoutPage() {
     });
   }
 
-  function promoteToCatalog(item: ScoutItem) {
-    loadSeedProducts().then(() => {
+  async function promoteToCatalog(item: ScoutItem) {
+    try {
+      const existing = await fetchAdminProducts();
       const product: Product = {
         id: generateId(),
         title: item.title,
@@ -112,15 +112,16 @@ export default function ScoutPage() {
         createdAt: new Date().toISOString(),
       };
 
-      const products = [product, ...getProducts()];
-      saveProducts(products);
+      await saveProducts([product, ...existing]);
 
       const updated = getScoutQueue().map((q) =>
         q.id === item.id ? { ...q, promoted: true } : q
       );
       saveScoutQueue(updated);
       setQueue(updated);
-    });
+    } catch (err) {
+      setFetchError(err instanceof Error ? err.message : "Failed to publish to catalog");
+    }
   }
 
   async function autoFetchTrending() {

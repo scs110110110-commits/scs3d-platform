@@ -1,47 +1,50 @@
 import type { Product, ScoutItem } from "./types";
 
-const PRODUCTS_KEY = "scs3d_products";
 const SCOUT_KEY = "scs3d_scout_queue";
-const SEED_LOADED_KEY = "scs3d_seed_loaded_v2";
 
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export function getProducts(): Product[] {
-  if (typeof window === "undefined") return [];
-  const raw = localStorage.getItem(PRODUCTS_KEY);
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw) as Product[];
-  } catch {
-    return [];
-  }
+/** Public catalog — all devices see the same products */
+export async function fetchCatalogProducts(): Promise<Product[]> {
+  const res = await fetch("/api/products", { cache: "no-store" });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to load catalog");
+  return data.products ?? [];
 }
 
-export function saveProducts(products: Product[]): void {
-  localStorage.setItem(PRODUCTS_KEY, JSON.stringify(products));
+/** Admin — full product list from server */
+export async function fetchAdminProducts(): Promise<Product[]> {
+  const res = await fetch("/api/admin/products", {
+    credentials: "include",
+    cache: "no-store",
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to load products");
+  return data.products ?? [];
 }
 
-export async function loadSeedProducts(): Promise<Product[]> {
-  if (typeof window === "undefined") return [];
-  if (localStorage.getItem(SEED_LOADED_KEY)) return getProducts();
-
-  try {
-    const res = await fetch("/data/products.json");
-    const seed = (await res.json()) as Product[];
-    saveProducts(seed);
-    localStorage.setItem(SEED_LOADED_KEY, "1");
-    return seed;
-  } catch {
-    return [];
-  }
+export async function saveProducts(products: Product[]): Promise<void> {
+  const res = await fetch("/api/admin/products", {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ products }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Failed to save products");
 }
 
 export function getPublishedProducts(products: Product[]): Product[] {
   return products
     .filter((p) => p.published)
     .sort((a, b) => b.trendScore - a.trendScore);
+}
+
+/** @deprecated use fetchCatalogProducts or fetchAdminProducts */
+export async function loadSeedProducts(): Promise<Product[]> {
+  return fetchAdminProducts();
 }
 
 export function getScoutQueue(): ScoutItem[] {
@@ -71,14 +74,12 @@ export function exportProductsJson(products: Product[]): void {
   URL.revokeObjectURL(url);
 }
 
-export function importProductsJson(file: File): Promise<Product[]> {
-  return new Promise((resolve, reject) => {
+export async function importProductsJson(file: File): Promise<Product[]> {
+  const data = await new Promise<Product[]>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        const data = JSON.parse(reader.result as string) as Product[];
-        saveProducts(data);
-        resolve(data);
+        resolve(JSON.parse(reader.result as string) as Product[]);
       } catch {
         reject(new Error("Invalid JSON file"));
       }
@@ -86,9 +87,14 @@ export function importProductsJson(file: File): Promise<Product[]> {
     reader.onerror = () => reject(new Error("Could not read file"));
     reader.readAsText(file);
   });
+
+  await saveProducts(data);
+  return data;
 }
 
-export function resetToSeed(): void {
-  localStorage.removeItem(PRODUCTS_KEY);
-  localStorage.removeItem(SEED_LOADED_KEY);
+export async function resetToSeed(): Promise<Product[]> {
+  const res = await fetch("/data/products.json");
+  const seed = (await res.json()) as Product[];
+  await saveProducts(seed);
+  return seed;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { getPublishedProducts, loadSeedProducts } from "@/lib/storage";
+import { fetchCatalogProducts } from "@/lib/storage";
 import type { Product } from "@/lib/types";
 import CatalogFilters from "./CatalogFilters";
 import CatalogHero from "./CatalogHero";
@@ -14,12 +14,13 @@ export default function CatalogPage() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    loadSeedProducts().then((data) => {
-      setProducts(getPublishedProducts(data));
-      setLoading(false);
-    });
+    fetchCatalogProducts()
+      .then(setProducts)
+      .catch((err) => setError(err instanceof Error ? err.message : "Load failed"))
+      .finally(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
@@ -51,6 +52,8 @@ export default function CatalogPage() {
 
         {loading ? (
           <div className="py-10 text-center text-sm text-zinc-600">Loading catalog...</div>
+        ) : error ? (
+          <div className="py-10 text-center text-sm text-red-400">{error}</div>
         ) : filtered.length === 0 ? (
           <div className="py-10 text-center text-sm text-zinc-600">No products found.</div>
         ) : (
