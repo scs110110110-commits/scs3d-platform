@@ -1,4 +1,5 @@
 export const WHATSAPP_NUMBER = "15485777916";
+export const CONTACT_EMAIL = "ssuadiye@gmail.com";
 export const BRAND_NAME = "SCS3D";
 export const BRAND_URL = "scs3d.com";
 export const BRAND_TAGLINE =
