@@ -19,7 +19,7 @@ interface CultsCreation {
 }
 
 const CULTS_RECENT_DOWNLOADS = `
-  query CultsRecentDownloads($limit: Int!, $after: DateTime!) {
+  query CultsRecentDownloads($limit: Int!, $after: String!) {
     creationsBatch(
       sort: BY_DOWNLOADS
       direction: DESC
@@ -35,7 +35,22 @@ const CULTS_RECENT_DOWNLOADS = `
         likesCount
         downloadsCount
         viewsCount
-        publishedAt
+      }
+    }
+  }
+`;
+
+const CULTS_TOP_DOWNLOADS = `
+  query CultsTopDownloads($limit: Int!) {
+    creationsBatch(sort: BY_DOWNLOADS, direction: DESC, limit: $limit, offset: 0) {
+      results {
+        name(locale: EN)
+        url(locale: EN)
+        shortUrl
+        illustrationImageUrl(version: DEFAULT)
+        likesCount
+        downloadsCount
+        viewsCount
       }
     }
   }
@@ -78,6 +93,29 @@ function resolveCultsUrl(item: CultsCreation): string {
   return "";
 }
 
+async function cultsGraphql(
+  auth: string,
+  body: Record<string, unknown>
+): Promise<CultsCreation[]> {
+  const res = await fetch("https://cults3d.com/graphql", {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: auth,
+    },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+
+  if (!res.ok) return [];
+
+  const json = await res.json();
+  if (json?.errors?.length) return [];
+
+  return json?.data?.creationsBatch?.results ?? [];
+}
+
 /** Cults3D UI: Downloads, last 30 days window */
 export async function fetchCults3dTrending(
   limit = SCOUT_POOL_PER_SITE
@@ -86,30 +124,19 @@ export async function fetchCults3dTrending(
   if (!auth) return [];
 
   try {
-    const res = await fetch("https://cults3d.com/graphql", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: auth,
-      },
-      body: JSON.stringify({
-        operationName: "CultsRecentDownloads",
-        query: CULTS_RECENT_DOWNLOADS,
-        variables: {
-          limit,
-          after: scoutWindowStartIso(),
-        },
-      }),
-      cache: "no-store",
+    let results = await cultsGraphql(auth, {
+      operationName: "CultsRecentDownloads",
+      query: CULTS_RECENT_DOWNLOADS,
+      variables: { limit, after: scoutWindowStartIso() },
     });
 
-    if (!res.ok) return [];
-
-    const json = await res.json();
-    if (json?.errors?.length) return [];
-
-    const results: CultsCreation[] = json?.data?.creationsBatch?.results ?? [];
+    if (results.length === 0) {
+      results = await cultsGraphql(auth, {
+        operationName: "CultsTopDownloads",
+        query: CULTS_TOP_DOWNLOADS,
+        variables: { limit },
+      });
+    }
 
     return results
       .map((item) => {
