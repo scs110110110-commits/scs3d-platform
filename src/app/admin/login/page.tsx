@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
+import Logo from "@/components/Logo";
 
 function LoginForm() {
   const router = useRouter();
@@ -43,14 +44,13 @@ function LoginForm() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-8"
       >
-        <div className="mb-6 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-zinc-800 text-xl">
-            🔒
-          </div>
-          <h1 className="text-xl font-bold text-white">SCS3D Admin</h1>
-          <p className="mt-1 text-sm text-zinc-500">
-            Session expires after 1 hour
-          </p>
+        <div className="mb-6 flex justify-center">
+          <Logo
+            size="lg"
+            title="SCS3D Admin"
+            tagline="Session expires after 1 hour"
+            taglineClassName="text-sm text-zinc-500"
+          />
         </div>
 
         <input

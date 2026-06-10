@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Logo from "@/components/Logo";
 
 export default function Footer() {
   return (
@@ -6,8 +7,8 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
         <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-lg font-bold text-white">SCS3D</p>
-            <p className="mt-2 max-w-xs text-sm leading-relaxed text-zinc-500">
+            <Logo size="sm" title="SCS3D" tagline="" />
+            <p className="mt-3 max-w-xs text-sm leading-relaxed text-zinc-500">
               Professional 3D printing and custom CAD design. Order via WhatsApp.
             </p>
           </div>

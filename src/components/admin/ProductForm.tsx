@@ -3,6 +3,7 @@
 import { CATEGORIES, type Category, type TrendStatus } from "@/lib/config";
 import type { Product } from "@/lib/types";
 import { generateId } from "@/lib/storage";
+import ProductImageManager from "./ProductImageManager";
 
 export const emptyProduct = (): Product => ({
   id: generateId(),
@@ -95,23 +96,10 @@ export default function ProductForm({
           />
         </div>
 
-        <div className="sm:col-span-2">
-          <label className="mb-1 block text-sm text-zinc-400">Image URL *</label>
-          <input
-            value={product.imageUrl}
-            onChange={(e) => set("imageUrl", e.target.value)}
-            placeholder="https://..."
-            className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-2.5 text-white outline-none focus:border-cyan-500"
-          />
-          {product.imageUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={product.imageUrl}
-              alt="Preview"
-              className="mt-2 h-24 w-24 rounded-lg object-cover"
-            />
-          )}
-        </div>
+        <ProductImageManager
+          product={product}
+          onChange={(fields) => onChange({ ...product, ...fields })}
+        />
 
         <div>
           <label className="mb-1 block text-sm text-zinc-400">Category</label>
@@ -222,7 +210,13 @@ export default function ProductForm({
 
       <div className="mt-6 flex gap-3">
         <button
-          onClick={onSave}
+          onClick={() => {
+            if (!product.imageUrl.trim()) {
+              alert("Please add at least one product photo.");
+              return;
+            }
+            onSave();
+          }}
           className="rounded-xl bg-cyan-600 px-6 py-2.5 font-semibold text-white hover:bg-cyan-500"
         >
           Save Product

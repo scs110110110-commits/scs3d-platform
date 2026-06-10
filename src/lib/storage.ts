@@ -2,7 +2,7 @@ import type { Product, ScoutItem } from "./types";
 
 const PRODUCTS_KEY = "scs3d_products";
 const SCOUT_KEY = "scs3d_scout_queue";
-const SEED_LOADED_KEY = "scs3d_seed_loaded";
+const SEED_LOADED_KEY = "scs3d_seed_loaded_v2";
 
 export function generateId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;

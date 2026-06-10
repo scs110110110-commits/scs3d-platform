@@ -2,7 +2,8 @@
 
 import { TREND_BADGES } from "@/lib/config";
 import type { Product } from "@/lib/types";
-import { ORDER_BUTTON_LABEL, openWhatsAppOrder } from "@/lib/whatsapp";
+import OrderActions from "./OrderActions";
+import ProductImageCarousel from "./ProductImageCarousel";
 
 interface ProductModalProps {
   product: Product | null;
@@ -25,12 +26,7 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
           ✕
         </button>
 
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={product.imageUrl}
-          alt={product.title}
-          className="h-64 w-full object-cover sm:h-80"
-        />
+        <ProductImageCarousel key={product.id} product={product} variant="modal" />
 
         <div className="p-6">
           <div className="mb-2 flex flex-wrap gap-2">
@@ -51,8 +47,10 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
               <dd className="text-white">{product.material}</dd>
             </div>
             <div>
-              <dt className="text-zinc-500">Quote</dt>
-              <dd className="text-emerald-400">Request via WhatsApp</dd>
+              <dt className="mb-1.5 text-zinc-500">Quote</dt>
+              <dd>
+                <OrderActions product={product} variant="compact" />
+              </dd>
             </div>
             {product.sourceName && (
               <div className="col-span-2">
@@ -70,13 +68,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
               </div>
             )}
           </dl>
-
-          <button
-            onClick={() => openWhatsAppOrder(product)}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-4 text-lg font-semibold text-white transition hover:bg-emerald-500"
-          >
-            💬 {ORDER_BUTTON_LABEL}
-          </button>
         </div>
       </div>
     </div>

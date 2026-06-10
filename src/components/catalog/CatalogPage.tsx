@@ -37,11 +37,9 @@ export default function CatalogPage() {
     return list;
   }, [products, category, search]);
 
-  const hotCount = products.filter((p) => p.status === "hot" || p.status === "trending").length;
-
   return (
     <>
-      <CatalogHero productCount={products.length} hotCount={hotCount} />
+      <CatalogHero />
 
       <div id="catalog" className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
         <CatalogFilters
@@ -56,7 +54,7 @@ export default function CatalogPage() {
         ) : filtered.length === 0 ? (
           <div className="py-20 text-center text-zinc-500">No products found.</div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((product) => (
               <ProductCard
                 key={product.id}

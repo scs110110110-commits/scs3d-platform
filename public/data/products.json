@@ -6,7 +6,10 @@
     "description": "Top-selling articulating dragon on TikTok and Etsy. Durable segmented movement in PLA or PETG. Perfect desk decor and gift item.",
     "price": 28,
     "imageUrl": "https://images.unsplash.com/photo-1614726365723-49d988a6ea6f?w=600&h=600&fit=crop",
-    "images": [],
+    "images": [
+      "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=600&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1608889825103-e2205f9f47e8?w=600&h=600&fit=crop"
+    ],
     "category": "Toys & Collectibles",
     "tags": ["dragon", "articulating", "viral", "gift"],
     "trendScore": 95,
@@ -26,7 +29,10 @@
     "description": "Home office staple. Adjustable angle for iPhone and Android, cable routing, non-slip base. Fast print, high demand.",
     "price": 18,
     "imageUrl": "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=600&h=600&fit=crop",
-    "images": [],
+    "images": [
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1556656793-08538906a9f8?w=600&h=600&fit=crop"
+    ],
     "category": "Phone & Tech",
     "tags": ["phone", "stand", "desk", "magsafe"],
     "trendScore": 88,
@@ -46,7 +52,10 @@
     "description": "The maker community's #1 organization system. Customizable bins to fit your drawers. Steady demand for workshop and home use.",
     "price": 35,
     "imageUrl": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&h=600&fit=crop",
-    "images": [],
+    "images": [
+      "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1504148455328-c376907d149c?w=600&h=600&fit=crop"
+    ],
     "category": "Tools & Organizers",
     "tags": ["gridfinity", "organizer", "maker", "modular"],
     "trendScore": 82,
@@ -66,7 +75,10 @@
     "description": "Rising product in the automotive accessories segment. PETG recommended for vibration resistance. Strong local demand in Kitchener-Waterloo.",
     "price": 22,
     "imageUrl": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=600&h=600&fit=crop",
-    "images": [],
+    "images": [
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=600&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&h=600&fit=crop"
+    ],
     "category": "Automotive",
     "tags": ["car", "mount", "automotive", "phone"],
     "trendScore": 79,
@@ -86,7 +98,10 @@
     "description": "Popular vase mode prints on Instagram and Pinterest. Thick walls and PETG/PLA+ recommended for water resistance.",
     "price": 24,
     "imageUrl": "https://images.unsplash.com/photo-1578500494198-246f612d3b3d?w=600&h=600&fit=crop",
-    "images": [],
+    "images": [
+      "https://images.unsplash.com/photo-1615529328331-f8917597711f?w=600&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1616046229425-990d7854e3f2?w=600&h=600&fit=crop"
+    ],
     "category": "Home & Decor",
     "tags": ["vase", "decor", "spiral", "home"],
     "trendScore": 76,
@@ -106,7 +121,10 @@
     "description": "Cable organization sells consistently with the remote work trend. High margin as a set, low print time.",
     "price": 15,
     "imageUrl": "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?w=600&h=600&fit=crop",
-    "images": [],
+    "images": [
+      "https://images.unsplash.com/photo-1587825140708-dfaf72ae4b04?w=600&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&h=600&fit=crop"
+    ],
     "category": "Desk & Office",
     "tags": ["cable", "desk", "organizer", "wfh"],
     "trendScore": 71,

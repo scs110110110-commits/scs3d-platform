@@ -1,4 +1,4 @@
-import { BRAND_NAME, BRAND_URL, WHATSAPP_NUMBER } from "./config";
+import { BRAND_NAME, BRAND_URL, CONTACT_EMAIL, WHATSAPP_NUMBER } from "./config";
 
 export const ORDER_BUTTON_LABEL = "Order on WhatsApp";
 
@@ -25,6 +25,7 @@ export function buildOrderMessage(product: {
 
 export function buildCustomWhatsAppMessage(params: {
   name: string;
+  phone: string;
   email: string;
   idea: string;
   dimensions: string;
@@ -33,6 +34,7 @@ export function buildCustomWhatsAppMessage(params: {
     `Hi ${BRAND_NAME}! I have a custom 3D print / CAD request from ${BRAND_URL}:`,
     "",
     params.name.trim() ? `Name: ${params.name.trim()}` : null,
+    `Phone: ${params.phone.trim()}`,
     params.email.trim() ? `Email: ${params.email.trim()}` : null,
     "",
     `Idea: ${params.idea.trim()}`,
@@ -46,6 +48,12 @@ export function buildCustomWhatsAppMessage(params: {
 
 export function getWhatsAppUrl(message: string): string {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+export function getOrderEmailHref(product: Parameters<typeof buildOrderMessage>[0]): string {
+  const subject = `[${BRAND_NAME}] Order — ${product.title}`;
+  const body = buildOrderMessage(product);
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 export function openWhatsAppOrder(product: Parameters<typeof buildOrderMessage>[0]): void {

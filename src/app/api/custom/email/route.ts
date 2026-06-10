@@ -39,12 +39,16 @@ export async function POST(request: Request) {
     const formData = await request.formData();
 
     const name = String(formData.get("name") || "").trim();
+    const phone = String(formData.get("phone") || "").trim();
     const email = String(formData.get("email") || "").trim();
     const idea = String(formData.get("idea") || "").trim();
     const dimensions = String(formData.get("dimensions") || "").trim();
 
     if (!idea) {
       return NextResponse.json({ error: "Please describe your idea." }, { status: 400 });
+    }
+    if (!phone) {
+      return NextResponse.json({ error: "Phone number is required." }, { status: 400 });
     }
     if (!email) {
       return NextResponse.json({ error: "Email is required." }, { status: 400 });
@@ -97,6 +101,7 @@ export async function POST(request: Request) {
       `New custom request from ${BRAND_URL}`,
       "",
       `Name: ${name || "Not provided"}`,
+      `Phone: ${phone}`,
       `Email: ${email}`,
       dimensions ? `Dimensions: ${dimensions}` : null,
       "",

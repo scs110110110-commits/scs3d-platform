@@ -8,6 +8,7 @@ type ContactMethod = "whatsapp" | "email";
 export default function CustomRequestForm() {
   const [method, setMethod] = useState<ContactMethod>("whatsapp");
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [idea, setIdea] = useState("");
   const [dimensions, setDimensions] = useState("");
@@ -21,13 +22,22 @@ export default function CustomRequestForm() {
     setImages((prev) => [...prev, ...Array.from(files)].slice(0, 6));
   }
 
+  function validatePhone(): boolean {
+    if (!phone.trim()) {
+      setError("Please enter your phone number.");
+      return false;
+    }
+    return true;
+  }
+
   async function handleWhatsAppSubmit() {
     if (!idea.trim()) {
       setError("Please describe your idea.");
       return;
     }
+    if (!validatePhone()) return;
 
-    openCustomWhatsAppRequest({ name, email, idea, dimensions });
+    openCustomWhatsAppRequest({ name, phone, email, idea, dimensions });
     setSuccess(true);
     setError("");
   }
@@ -38,6 +48,7 @@ export default function CustomRequestForm() {
       setError("Please describe your idea.");
       return;
     }
+    if (!validatePhone()) return;
     if (!email.trim()) {
       setError("Please enter your email address.");
       return;
@@ -51,6 +62,7 @@ export default function CustomRequestForm() {
     try {
       const formData = new FormData();
       formData.append("name", name);
+      formData.append("phone", phone);
       formData.append("email", email);
       formData.append("idea", idea);
       formData.append("dimensions", dimensions);
@@ -66,6 +78,7 @@ export default function CustomRequestForm() {
 
       setSuccess(true);
       setName("");
+      setPhone("");
       setEmail("");
       setIdea("");
       setDimensions("");
@@ -181,16 +194,30 @@ export default function CustomRequestForm() {
             </div>
             <div>
               <label className="mb-1.5 block text-sm font-medium text-zinc-400">
-                Email {method === "email" && "*"}
+                Phone *
               </label>
               <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                required
                 className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white outline-none focus:border-cyan-500"
-                placeholder="you@email.com"
+                placeholder="+1 519 555 1234"
               />
             </div>
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-zinc-400">
+              Email {method === "email" && "*"}
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-white outline-none focus:border-cyan-500"
+              placeholder="you@email.com"
+            />
           </div>
 
           <div>

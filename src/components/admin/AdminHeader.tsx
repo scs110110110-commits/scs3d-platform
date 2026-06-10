@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Logo from "@/components/Logo";
 
 export default function AdminHeader() {
   const router = useRouter();
@@ -15,15 +16,12 @@ export default function AdminHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-800 text-lg">
-            🔒
-          </div>
-          <div>
-            <div className="text-lg font-bold text-white">SCS3D Admin</div>
-            <div className="text-xs text-zinc-500">Session · 1h expiry</div>
-          </div>
-        </div>
+        <Logo
+          size="sm"
+          title="SCS3D Admin"
+          tagline="Session · 1h expiry"
+          taglineClassName="text-xs text-zinc-500"
+        />
 
         <nav className="flex items-center gap-4">
           <Link href="/admin" className="text-sm text-zinc-400 hover:text-cyan-400">
