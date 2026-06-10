@@ -1,3 +1,4 @@
+import { SCOUT_WINDOW_DAYS } from "@/lib/scoutConfig";
 import { getRuntimeEnv } from "@/lib/env";
 import type { RisingItem } from "@/lib/risingEngine";
 
@@ -7,12 +8,19 @@ export function isTelegramConfigured(): boolean {
   );
 }
 
-function risingLabel(item: RisingItem): string {
-  if (item.isNew) return "NEW";
+function risingLabel(item: RisingItem, hasBaseline: boolean): string {
   const parts: string[] = [];
-  if (item.rankDelta > 0) parts.push(`+${item.rankDelta} ranks`);
-  if (item.scoreDelta > 0) parts.push(`+${item.scoreDelta} score`);
-  return parts.join(", ") || "rising";
+
+  if (hasBaseline) {
+    if (item.downloadDelta > 0) parts.push(`+${item.downloadDelta} dl/24h`);
+    if (item.likeDelta > 0) parts.push(`+${item.likeDelta} likes/24h`);
+    if (parts.length === 0 && item.isNew) parts.push("NEW in pool");
+    if (parts.length === 0) parts.push("steady");
+  } else {
+    parts.push(`${item.downloadsCount.toLocaleString()} dl (30d window)`);
+  }
+
+  return parts.join(" · ");
 }
 
 export function formatDailyRisingReport(
@@ -23,18 +31,20 @@ export function formatDailyRisingReport(
     fetchedCount: number;
     cultsCount: number;
     printablesCount: number;
+    poolSize: number;
   }
 ): string {
   const date = new Date().toISOString().slice(0, 10);
   const lines: string[] = [
     "📈 SCS3D Daily Rising Report",
     `📅 ${date}`,
+    `🪟 Window: last ${SCOUT_WINDOW_DAYS} days · Cults=downloads · Printables=trending proxy`,
     "",
   ];
 
   if (!options.hasBaseline) {
     lines.push(
-      "ℹ️ First run — showing today's top picks. Rising deltas start tomorrow.",
+      "ℹ️ First run — ranked by downloads in the 30-day window. Velocity (24h deltas) starts tomorrow.",
       ""
     );
   }
@@ -47,12 +57,12 @@ export function formatDailyRisingReport(
 
     let index = 0;
     if (cults.length > 0) {
-      lines.push(`🔥 Cults3D (${cults.length})`, "");
+      lines.push(`🔥 Cults3D · downloads (${cults.length})`, "");
       for (const item of cults) {
         index += 1;
         lines.push(
           `${index}. ${item.title}`,
-          `   score ${Math.round(item.trendScore)} · ${risingLabel(item)}`,
+          `   ${risingLabel(item, options.hasBaseline)}`,
           `   ${item.sourceUrl}`,
           ""
         );
@@ -60,12 +70,12 @@ export function formatDailyRisingReport(
     }
 
     if (printables.length > 0) {
-      lines.push(`🖨️ Printables (${printables.length})`, "");
+      lines.push(`🖨️ Printables · past ${SCOUT_WINDOW_DAYS}d (${printables.length})`, "");
       for (const item of printables) {
         index += 1;
         lines.push(
           `${index}. ${item.title}`,
-          `   score ${Math.round(item.trendScore)} · ${risingLabel(item)}`,
+          `   ${risingLabel(item, options.hasBaseline)}`,
           `   ${item.sourceUrl}`,
           ""
         );
@@ -74,12 +84,12 @@ export function formatDailyRisingReport(
   }
 
   lines.push(
-    `Total: ${options.fetchedCount} links (${options.cultsCount} Cults3D + ${options.printablesCount} Printables).`,
+    `Scanned ${options.poolSize} models → ${options.fetchedCount} in report (${options.cultsCount} Cults3D + ${options.printablesCount} Printables).`,
     options.snapshotSaved
-      ? "Snapshot saved for tomorrow's comparison."
-      : "⚠️ Snapshot not saved — add Vercel KV / Upstash env vars.",
+      ? "Metrics saved — tomorrow compares 24h download/like growth."
+      : "⚠️ Add Vercel KV to track daily velocity (recommended).",
     "",
-    "Add to catalog manually: scs3d.com/admin/scout"
+    "Add to catalog: scs3d.com/admin/scout"
   );
 
   return lines.join("\n");

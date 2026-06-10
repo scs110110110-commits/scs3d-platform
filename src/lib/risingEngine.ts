@@ -1,3 +1,4 @@
+import { DAILY_REPORT_PER_SITE } from "@/lib/scoutConfig";
 import type { FetchedTrendItem } from "@/lib/trendFetcher";
 import { itemKey, type ScoutSnapshot } from "@/lib/scoutSnapshot";
 
@@ -5,76 +6,118 @@ export interface RisingItem extends FetchedTrendItem {
   risingScore: number;
   rankDelta: number;
   scoreDelta: number;
+  downloadDelta: number;
+  likeDelta: number;
   isNew: boolean;
   currentRank: number;
   previousRank: number | null;
 }
 
-const DEFAULT_TOP = 10;
+function velocityScore(
+  item: FetchedTrendItem,
+  prev: ScoutSnapshot["items"][0] | undefined,
+  hasBaseline: boolean
+): { score: number; downloadDelta: number; likeDelta: number; isNew: boolean } {
+  if (!hasBaseline || !prev) {
+    return {
+      score: item.downloadsCount * 0.15 + item.likesCount * 0.08,
+      downloadDelta: 0,
+      likeDelta: 0,
+      isNew: true,
+    };
+  }
 
-export function computeRising(
+  const downloadDelta = Math.max(0, item.downloadsCount - prev.downloadsCount);
+  const likeDelta = Math.max(0, item.likesCount - prev.likesCount);
+  const score = downloadDelta * 2.5 + likeDelta * 1.2;
+
+  return {
+    score,
+    downloadDelta,
+    likeDelta,
+    isNew: false,
+  };
+}
+
+function rankPool(
+  pool: FetchedTrendItem[],
   previous: ScoutSnapshot | null,
-  current: FetchedTrendItem[],
-  topN = DEFAULT_TOP
+  sourceName: string,
+  topN: number
 ): RisingItem[] {
   const prevByKey = new Map(
     (previous?.items ?? []).map((item) => [item.key, item])
   );
+  const hasBaseline = Boolean(previous?.items.length);
 
-  const ranked: RisingItem[] = current.map((item, index) => {
-    const key = itemKey(item.sourceUrl);
-    const prev = prevByKey.get(key);
-    const currentRank = index + 1;
+  const subset = pool.filter((item) => item.sourceName === sourceName);
 
-    if (!prev) {
+  const ranked = subset
+    .map((item, index) => {
+      const key = itemKey(item.sourceUrl);
+      const prev = prevByKey.get(key);
+      const velocity = velocityScore(item, prev, hasBaseline);
+      const rankDelta = prev ? prev.rank - (index + 1) : 0;
+      const scoreDelta = prev ? item.trendScore - prev.trendScore : 0;
+
       return {
         ...item,
-        risingScore: 120 - currentRank * 3 + item.trendScore * 0.2,
-        rankDelta: 0,
-        scoreDelta: 0,
-        isNew: true,
-        currentRank,
-        previousRank: null,
+        risingScore: velocity.score,
+        rankDelta,
+        scoreDelta,
+        downloadDelta: velocity.downloadDelta,
+        likeDelta: velocity.likeDelta,
+        isNew: velocity.isNew,
+        currentRank: index + 1,
+        previousRank: prev?.rank ?? null,
       };
-    }
+    })
+    .sort((a, b) => b.risingScore - a.risingScore);
 
-    const rankDelta = prev.rank - currentRank;
-    const scoreDelta = item.trendScore - prev.trendScore;
-    const risingScore =
-      rankDelta * 18 + scoreDelta * 3 + Math.max(0, 15 - currentRank * 2);
-
-    return {
-      ...item,
-      risingScore,
-      rankDelta,
-      scoreDelta,
-      isNew: false,
-      currentRank,
-      previousRank: prev.rank,
-    };
-  });
-
-  if (!previous) {
+  if (!hasBaseline) {
     return ranked
-      .sort((a, b) => b.trendScore - a.trendScore)
+      .sort((a, b) => b.downloadsCount - a.downloadsCount)
       .slice(0, topN)
-      .map((item) => ({
+      .map((item, i) => ({
         ...item,
-        risingScore: item.trendScore,
+        currentRank: i + 1,
         isNew: true,
+        risingScore: item.downloadsCount,
       }));
   }
 
-  return ranked
-    .filter((item) => item.isNew || item.rankDelta > 0 || item.scoreDelta > 0)
-    .sort((a, b) => b.risingScore - a.risingScore)
-    .slice(0, topN);
+  const movers = ranked.filter(
+    (item) => item.downloadDelta > 0 || item.likeDelta > 0 || item.isNew
+  );
+
+  const picked = (movers.length > 0 ? movers : ranked).slice(0, topN);
+  return picked.map((item, i) => ({ ...item, currentRank: i + 1 }));
+}
+
+/** Top N per site by 24h download/like velocity (or 30d downloads on first run) */
+export function computeVelocityReport(
+  previous: ScoutSnapshot | null,
+  pool: FetchedTrendItem[],
+  perSite = DAILY_REPORT_PER_SITE
+): RisingItem[] {
+  const cults = rankPool(pool, previous, "Cults3D", perSite);
+  const printables = rankPool(pool, previous, "Printables", perSite);
+  return [...cults, ...printables];
+}
+
+/** @deprecated use computeVelocityReport */
+export function computeRising(
+  previous: ScoutSnapshot | null,
+  current: FetchedTrendItem[],
+  topN = 10
+): RisingItem[] {
+  return computeVelocityReport(previous, current, Math.ceil(topN / 2));
 }
 
 export function fillReportItems(
   rising: RisingItem[],
   pool: FetchedTrendItem[],
-  count = DEFAULT_TOP
+  count = DAILY_REPORT_PER_SITE * 2
 ): RisingItem[] {
   const seen = new Set<string>();
   const result: RisingItem[] = [];
@@ -94,9 +137,11 @@ export function fillReportItems(
     seen.add(key);
     result.push({
       ...item,
-      risingScore: item.trendScore,
+      risingScore: item.downloadsCount,
       rankDelta: 0,
       scoreDelta: 0,
+      downloadDelta: 0,
+      likeDelta: 0,
       isNew: true,
       currentRank: result.length + 1,
       previousRank: null,

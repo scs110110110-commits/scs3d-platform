@@ -1,5 +1,10 @@
 import type { Category } from "@/lib/config";
 import { getRuntimeEnv } from "@/lib/env";
+import {
+  SCOUT_POOL_PER_SITE,
+  SCOUT_WINDOW_DAYS,
+  scoutWindowStartIso,
+} from "@/lib/scoutConfig";
 import type { FetchedTrendItem } from "@/lib/trendFetcher";
 
 interface CultsCreation {
@@ -10,11 +15,18 @@ interface CultsCreation {
   likesCount?: number;
   downloadsCount?: number;
   viewsCount?: number;
+  publishedAt?: string;
 }
 
-const CULTS_GRAPHQL = `
-  query CultsTrending($limit: Int!) {
-    creationsBatch(sort: BY_LIKES, direction: DESC, limit: $limit, offset: 0) {
+const CULTS_RECENT_DOWNLOADS = `
+  query CultsRecentDownloads($limit: Int!, $after: DateTime!) {
+    creationsBatch(
+      sort: BY_DOWNLOADS
+      direction: DESC
+      limit: $limit
+      offset: 0
+      submittedAfter: $after
+    ) {
       results {
         name(locale: EN)
         url(locale: EN)
@@ -23,6 +35,7 @@ const CULTS_GRAPHQL = `
         likesCount
         downloadsCount
         viewsCount
+        publishedAt
       }
     }
   }
@@ -65,7 +78,10 @@ function resolveCultsUrl(item: CultsCreation): string {
   return "";
 }
 
-export async function fetchCults3dTrending(limit = 10): Promise<FetchedTrendItem[]> {
+/** Cults3D UI: Downloads, last 30 days window */
+export async function fetchCults3dTrending(
+  limit = SCOUT_POOL_PER_SITE
+): Promise<FetchedTrendItem[]> {
   const auth = cultsAuthHeader();
   if (!auth) return [];
 
@@ -78,9 +94,12 @@ export async function fetchCults3dTrending(limit = 10): Promise<FetchedTrendItem
         Authorization: auth,
       },
       body: JSON.stringify({
-        operationName: "CultsTrending",
-        query: CULTS_GRAPHQL,
-        variables: { limit },
+        operationName: "CultsRecentDownloads",
+        query: CULTS_RECENT_DOWNLOADS,
+        variables: {
+          limit,
+          after: scoutWindowStartIso(),
+        },
       }),
       cache: "no-store",
     });
@@ -99,15 +118,20 @@ export async function fetchCults3dTrending(limit = 10): Promise<FetchedTrendItem
         const imageUrl = item.illustrationImageUrl?.startsWith("http")
           ? item.illustrationImageUrl
           : "";
+        const downloadsCount = item.downloadsCount ?? 0;
+        const likesCount = item.likesCount ?? 0;
 
         return {
           title,
           sourceUrl,
           sourceName: "Cults3D",
           imageUrl,
-          notes: `Trending on Cults3D. Likes: ${item.likesCount ?? "N/A"}, downloads: ${item.downloadsCount ?? "N/A"}`,
-          trendScore: scoreFromCults(item.likesCount ?? 0, item.downloadsCount ?? 0),
+          notes: `Cults3D · last ${SCOUT_WINDOW_DAYS}d downloads. Likes: ${likesCount}, downloads: ${downloadsCount}`,
+          trendScore: scoreFromCults(likesCount, downloadsCount),
           category: guessCategory(title),
+          downloadsCount,
+          likesCount,
+          publishedAt: item.publishedAt,
         };
       })
       .filter((item) => item.sourceUrl.startsWith("http") && item.imageUrl.startsWith("http"));

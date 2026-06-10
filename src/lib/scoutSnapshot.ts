@@ -11,6 +11,9 @@ export interface SnapshotEntry {
   sourceName: string;
   trendScore: number;
   rank: number;
+  downloadsCount: number;
+  likesCount: number;
+  publishedAt?: string;
 }
 
 export interface ScoutSnapshot {
@@ -46,6 +49,9 @@ export function buildSnapshot(items: FetchedTrendItem[]): ScoutSnapshot {
       sourceName: item.sourceName,
       trendScore: item.trendScore,
       rank: index + 1,
+      downloadsCount: item.downloadsCount,
+      likesCount: item.likesCount,
+      publishedAt: item.publishedAt,
     })),
   };
 }

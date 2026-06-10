@@ -1,16 +1,14 @@
 import { NextResponse } from "next/server";
 import { verifyCronRequest } from "@/lib/cronAuth";
-import { computeRising, fillReportItems } from "@/lib/risingEngine";
+import { computeVelocityReport, fillReportItems } from "@/lib/risingEngine";
+import { DAILY_REPORT_TOTAL } from "@/lib/scoutConfig";
 import {
   buildSnapshot,
   isSnapshotStorageConfigured,
   loadSnapshot,
   saveSnapshot,
 } from "@/lib/scoutSnapshot";
-import {
-  DAILY_REPORT_TOTAL,
-  fetchBalancedTrending,
-} from "@/lib/trendFetcher";
+import { fetchScoutPool } from "@/lib/trendFetcher";
 import {
   formatDailyRisingReport,
   isTelegramConfigured,
@@ -26,8 +24,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const items = await fetchBalancedTrending();
-    if (items.length === 0) {
+    const pool = await fetchScoutPool();
+    if (pool.length === 0) {
       return NextResponse.json(
         { error: "No trending items fetched from Cults3D or Printables" },
         { status: 502 }
@@ -35,20 +33,21 @@ export async function GET(request: Request) {
     }
 
     const previous = await loadSnapshot();
-    const risingRaw = computeRising(previous, items, DAILY_REPORT_TOTAL);
-    const rising = fillReportItems(risingRaw, items, DAILY_REPORT_TOTAL);
-    const snapshot = buildSnapshot(items);
+    const risingRaw = computeVelocityReport(previous, pool);
+    const rising = fillReportItems(risingRaw, pool, DAILY_REPORT_TOTAL);
+    const snapshot = buildSnapshot(pool);
     const snapshotSaved = await saveSnapshot(snapshot);
 
     const cultsCount = rising.filter((item) => item.sourceName === "Cults3D").length;
     const printablesCount = rising.filter((item) => item.sourceName === "Printables").length;
 
     const report = formatDailyRisingReport(rising, {
-      hasBaseline: Boolean(previous),
+      hasBaseline: Boolean(previous?.items.length),
       snapshotSaved,
       fetchedCount: rising.length,
       cultsCount,
       printablesCount,
+      poolSize: pool.length,
     });
 
     let telegramSent = false;
@@ -60,9 +59,10 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       fetchedAt: snapshot.fetchedAt,
-      fetchedCount: items.length,
+      poolSize: pool.length,
+      fetchedCount: rising.length,
       risingCount: rising.length,
-      hasBaseline: Boolean(previous),
+      hasBaseline: Boolean(previous?.items.length),
       snapshotConfigured: isSnapshotStorageConfigured(),
       snapshotSaved,
       telegramConfigured: isTelegramConfigured(),
@@ -72,12 +72,11 @@ export async function GET(request: Request) {
         sourceUrl: item.sourceUrl,
         sourceName: item.sourceName,
         trendScore: item.trendScore,
+        downloadsCount: item.downloadsCount,
+        downloadDelta: item.downloadDelta,
+        likeDelta: item.likeDelta,
         risingScore: Math.round(item.risingScore * 10) / 10,
-        rankDelta: item.rankDelta,
-        scoreDelta: item.scoreDelta,
         isNew: item.isNew,
-        currentRank: item.currentRank,
-        previousRank: item.previousRank,
       })),
     });
   } catch (err) {

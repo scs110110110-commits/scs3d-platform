@@ -205,8 +205,8 @@ export default function ScoutPage() {
         <section className="mb-10 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6">
           <h2 className="text-xl font-bold text-white">Daily Telegram Report (Vercel Cron)</h2>
           <p className="mt-1 text-sm text-zinc-400">
-            Every morning: 5 Cults3D + 5 Printables links (10 total), compare with yesterday,
-            send to Telegram. You add photos manually here.
+            Every morning: scan last 30 days (Cults=downloads, Printables=trending window),
+            rank by 24h velocity, send 10 links to Telegram.
           </p>
           {cronStatus ? (
             <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
@@ -252,7 +252,7 @@ export default function ScoutPage() {
             <div>
               <h2 className="text-xl font-bold text-white">Auto-Fetch Rising Products</h2>
               <p className="mt-1 text-sm text-zinc-400">
-                Pulls trending items from Cults3D and Printables automatically.
+                Cults3D: downloads (last 30d). Printables: trending window (last 30d).
               </p>
             </div>
             <button
