@@ -1,7 +1,7 @@
 "use client";
 
 import type { Product } from "@/lib/types";
-import { getOrderEmailHref, openWhatsAppOrder } from "@/lib/whatsapp";
+import { openOrderEmail, openWhatsAppOrder } from "@/lib/whatsapp";
 
 interface OrderActionsProps {
   product: Pick<Product, "title" | "material" | "category" | "shortDescription">;
@@ -22,12 +22,13 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
         >
           WhatsApp
         </button>
-        <a
-          href={getOrderEmailHref(product)}
+        <button
+          type="button"
+          onClick={() => openOrderEmail(product)}
           className={`${compactBtn} bg-cyan-600/20 text-cyan-400 hover:bg-cyan-600/30`}
         >
           Email
-        </a>
+        </button>
         <button
           type="button"
           disabled
@@ -53,12 +54,13 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
       >
         WhatsApp
       </button>
-      <a
-        href={getOrderEmailHref(product)}
+      <button
+        type="button"
+        onClick={() => openOrderEmail(product)}
         className={`${compactBtn} bg-cyan-600/20 text-cyan-400 hover:bg-cyan-600/30`}
       >
         Email
-      </a>
+      </button>
       <button
         type="button"
         disabled

@@ -56,6 +56,17 @@ export function getOrderEmailHref(product: Parameters<typeof buildOrderMessage>[
   return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
+/** Opens the user's default mail app addressed to CONTACT_EMAIL */
+export function openOrderEmail(product: Parameters<typeof buildOrderMessage>[0]): void {
+  const href = getOrderEmailHref(product);
+  const link = document.createElement("a");
+  link.href = href;
+  link.style.display = "none";
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
 export function openWhatsAppOrder(product: Parameters<typeof buildOrderMessage>[0]): void {
   window.open(getWhatsAppUrl(buildOrderMessage(product)), "_blank");
 }
