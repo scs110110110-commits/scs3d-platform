@@ -1,8 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function AdminHeader() {
+  const router = useRouter();
+
+  async function handleLogout() {
+    await fetch("/api/admin/logout", { method: "POST" });
+    router.push("/admin/login");
+    router.refresh();
+  }
+
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
@@ -12,7 +21,7 @@ export default function AdminHeader() {
           </div>
           <div>
             <div className="text-lg font-bold text-white">SCS3D Admin</div>
-            <div className="text-xs text-zinc-500">Vercel protected</div>
+            <div className="text-xs text-zinc-500">Session · 1h expiry</div>
           </div>
         </div>
 
@@ -31,6 +40,12 @@ export default function AdminHeader() {
           >
             View Site ↗
           </a>
+          <button
+            onClick={handleLogout}
+            className="rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400 hover:bg-zinc-800"
+          >
+            Logout
+          </button>
         </nav>
       </div>
     </header>

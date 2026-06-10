@@ -1,27 +1,16 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/adminAuth";
 import { fetchAllTrending } from "@/lib/trendFetcher";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: Request) {
-  const password = process.env.ADMIN_PASSWORD;
-  const authHeader = request.headers.get("authorization");
+  const cookieStore = await cookies();
+  const token = cookieStore.get(ADMIN_COOKIE)?.value;
 
-  if (password) {
-    const valid =
-      authHeader?.startsWith("Basic ") &&
-      (() => {
-        try {
-          const decoded = atob(authHeader.slice(6));
-          return decoded.slice(decoded.indexOf(":") + 1) === password;
-        } catch {
-          return false;
-        }
-      })();
-
-    if (!valid) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+  if (!token || !(await verifyAdminToken(token))) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {

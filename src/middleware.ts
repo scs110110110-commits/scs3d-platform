@@ -1,9 +1,15 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/adminAuth";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  if (pathname === "/admin/login") {
+    return NextResponse.next();
+  }
+
   const password = process.env.ADMIN_PASSWORD;
-
   if (!password) {
     return new NextResponse(
       "Admin locked — set ADMIN_PASSWORD in Vercel Environment Variables, then redeploy.",
@@ -11,31 +17,17 @@ export function middleware(request: NextRequest) {
     );
   }
 
-  const authHeader = request.headers.get("authorization");
+  const token = request.cookies.get(ADMIN_COOKIE)?.value;
 
-  if (authHeader?.startsWith("Basic ")) {
-    try {
-      const decoded = atob(authHeader.slice(6));
-      const colonIndex = decoded.indexOf(":");
-      const pwd = decoded.slice(colonIndex + 1);
-
-      if (pwd === password) {
-        return NextResponse.next();
-      }
-    } catch {
-      // invalid auth header
-    }
+  if (token && (await verifyAdminToken(token))) {
+    return NextResponse.next();
   }
 
-  return new NextResponse("Authentication required", {
-    status: 401,
-    headers: {
-      "WWW-Authenticate": 'Basic realm="SCS3D Admin", charset="UTF-8"',
-      "Content-Type": "text/plain",
-    },
-  });
+  const loginUrl = new URL("/admin/login", request.url);
+  loginUrl.searchParams.set("from", pathname);
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/(.*)", "/api/scout/(.*)"],
+  matcher: ["/admin", "/admin/((?!login).*)", "/api/scout/(.*)"],
 };
