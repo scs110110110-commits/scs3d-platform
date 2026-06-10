@@ -4,12 +4,16 @@ import { BRAND_NAME, BRAND_URL, CONTACT_EMAIL } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
-/** Safe config check — booleans only, no secret values exposed */
+/** Safe config check — booleans/lengths only, no secret values exposed */
 export async function GET() {
+  const smtpUser = process.env.SMTP_USER ?? "";
+  const smtpPass = process.env.SMTP_PASS ?? "";
   return NextResponse.json({
-    configured: !!(process.env.SMTP_USER && process.env.SMTP_PASS),
-    hasSmtpUser: !!process.env.SMTP_USER,
-    hasSmtpPass: !!process.env.SMTP_PASS,
+    configured: !!(smtpUser && smtpPass),
+    hasSmtpUser: !!smtpUser,
+    hasSmtpPass: !!smtpPass,
+    smtpUserLength: smtpUser.length,
+    smtpPassLength: smtpPass.length,
     hasAdminPassword: !!process.env.ADMIN_PASSWORD,
   });
 }
