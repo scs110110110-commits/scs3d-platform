@@ -25,8 +25,9 @@ export default function AdminPage() {
   const refresh = useCallback(async () => {
     setError("");
     try {
-      const data = await fetchAdminProducts();
+      const { products: data, warning } = await fetchAdminProducts();
       setProducts(data);
+      if (warning) setNotice(warning);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load products");
     } finally {
@@ -41,9 +42,13 @@ export default function AdminPage() {
   async function persistList(list: Product[]) {
     setSaving(true);
     setError("");
+    setNotice("");
     try {
-      await saveProducts(list);
-      setProducts(list);
+      const { warning } = await saveProducts(list);
+      const { products: fresh, warning: loadWarning } = await fetchAdminProducts();
+      setProducts(fresh);
+      if (loadWarning) setNotice(loadWarning);
+      if (warning) setNotice(warning);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
       throw err;

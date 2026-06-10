@@ -90,7 +90,7 @@ export default function ScoutPage() {
 
   async function promoteToCatalog(item: ScoutItem) {
     try {
-      const existing = await fetchAdminProducts();
+      const { products: existing } = await fetchAdminProducts();
       const product: Product = {
         id: generateId(),
         title: item.title,

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import Logo from "@/components/Logo";
+import { parseApiJson } from "@/lib/apiClient";
 
 function LoginForm() {
   const router = useRouter();
@@ -26,7 +27,7 @@ function LoginForm() {
         body: JSON.stringify({ password }),
       });
 
-      const data = await res.json();
+      const data = await parseApiJson<{ error?: string }>(res);
       if (!res.ok) throw new Error(data.error || "Login failed");
 
       router.push(from);

@@ -2,10 +2,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/adminAuth";
 
+const PUBLIC_ADMIN_API = new Set(["/api/admin/login", "/api/admin/logout"]);
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname === "/admin/login") {
+  if (pathname === "/admin/login" || PUBLIC_ADMIN_API.has(pathname)) {
     return NextResponse.next();
   }
 
@@ -21,6 +23,10 @@ export async function middleware(request: NextRequest) {
 
   if (token && (await verifyAdminToken(token))) {
     return NextResponse.next();
+  }
+
+  if (pathname.startsWith("/api/")) {
+    return NextResponse.json({ error: "Unauthorized — log in again" }, { status: 401 });
   }
 
   const loginUrl = new URL("/admin/login", request.url);

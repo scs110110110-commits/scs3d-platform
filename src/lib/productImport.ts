@@ -102,6 +102,26 @@ export function parseProductsJson(raw: unknown): Product[] {
   );
 }
 
+const MAX_RESPONSE_BYTES = 3_000_000;
+
+export function capProductsForResponse(products: Product[]): {
+  products: Product[];
+  warning?: string;
+} {
+  if (estimateProductsBytes(products) <= MAX_RESPONSE_BYTES) {
+    return { products };
+  }
+
+  const { products: stripped, strippedImages } = stripBase64Images(products);
+  return {
+    products: stripped,
+    warning:
+      strippedImages > 0
+        ? "Photos were not loaded (catalog too large). Re-upload images before saving — saving now would remove photos."
+        : "Catalog response was trimmed due to size.",
+  };
+}
+
 export function prepareProductsForSave(products: Product[]): {
   products: Product[];
   warning?: string;

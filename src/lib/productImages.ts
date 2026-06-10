@@ -1,3 +1,4 @@
+import { compressDataUrl } from "./imageCompress";
 import type { Product } from "./types";
 
 export const MAX_PRODUCT_IMAGES = 8;
@@ -6,6 +7,24 @@ export const MAX_PRODUCT_IMAGE_BYTES = 2 * 1024 * 1024;
 export function getProductImages(product: Pick<Product, "imageUrl" | "images">): string[] {
   const list = [product.imageUrl, ...(product.images ?? [])].filter(Boolean);
   return [...new Set(list)];
+}
+
+export async function shrinkProductImages(products: Product[]): Promise<Product[]> {
+  return Promise.all(
+    products.map(async (product) => {
+      const imageUrl = product.imageUrl?.startsWith("data:image/")
+        ? await compressDataUrl(product.imageUrl)
+        : product.imageUrl;
+
+      const images = await Promise.all(
+        (product.images ?? []).map((img) =>
+          img.startsWith("data:image/") ? compressDataUrl(img) : img
+        )
+      );
+
+      return { ...product, imageUrl, images };
+    })
+  );
 }
 
 export function galleryToProductFields(gallery: string[]): Pick<Product, "imageUrl" | "images"> {

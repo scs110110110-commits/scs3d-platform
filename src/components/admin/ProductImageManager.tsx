@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { compressImageFile } from "@/lib/imageCompress";
 import {
   galleryToProductFields,
   getProductImages,
@@ -23,12 +24,7 @@ async function readImageFiles(files: FileList): Promise<string[]> {
       throw new Error(`"${file.name}" is too large. Max 2MB per image.`);
     }
 
-    const dataUrl = await new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = () => reject(new Error(`Could not read "${file.name}".`));
-      reader.readAsDataURL(file);
-    });
+    const dataUrl = await compressImageFile(file);
     results.push(dataUrl);
   }
 
@@ -117,7 +113,9 @@ export default function ProductImageManager({ product, onChange }: ProductImageM
         <p className="mt-2 text-sm font-medium text-white">
           {loading ? "Uploading..." : "Upload photos from computer"}
         </p>
-        <p className="mt-1 text-xs text-zinc-500">JPG, PNG, WebP — max 2MB each</p>
+        <p className="mt-1 text-xs text-zinc-500">
+          JPG, PNG, WebP — max 2MB each (auto-compressed for save)
+        </p>
       </label>
 
       <div className="mb-3 flex gap-2">

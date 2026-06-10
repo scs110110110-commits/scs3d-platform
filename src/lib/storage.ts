@@ -1,3 +1,6 @@
+import { parseApiJson } from "@/lib/apiClient";
+import { prepareProductsForSave } from "@/lib/productImport";
+import { shrinkProductImages } from "@/lib/productImages";
 import type { Product, ScoutItem } from "./types";
 
 const SCOUT_KEY = "scs3d_scout_queue";
@@ -9,31 +12,46 @@ export function generateId(): string {
 /** Public catalog — all devices see the same products */
 export async function fetchCatalogProducts(): Promise<Product[]> {
   const res = await fetch("/api/products", { cache: "no-store" });
-  const data = await res.json();
+  const data = await parseApiJson<{ products?: Product[]; error?: string }>(res);
   if (!res.ok) throw new Error(data.error || "Failed to load catalog");
   return data.products ?? [];
 }
 
 /** Admin — full product list from server */
-export async function fetchAdminProducts(): Promise<Product[]> {
+export async function fetchAdminProducts(): Promise<{
+  products: Product[];
+  warning?: string;
+}> {
   const res = await fetch("/api/admin/products", {
     credentials: "include",
     cache: "no-store",
   });
-  const data = await res.json();
+  const data = await parseApiJson<{
+    products?: Product[];
+    error?: string;
+    warning?: string;
+  }>(res);
   if (!res.ok) throw new Error(data.error || "Failed to load products");
-  return data.products ?? [];
+  return { products: data.products ?? [], warning: data.warning };
 }
 
-export async function saveProducts(products: Product[]): Promise<void> {
+export async function saveProducts(
+  products: Product[]
+): Promise<{ warning?: string }> {
+  const shrunk = await shrinkProductImages(products);
+  const prepared = prepareProductsForSave(shrunk);
+
   const res = await fetch("/api/admin/products", {
     method: "PUT",
     credentials: "include",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ products }),
+    body: JSON.stringify({ products: prepared.products }),
   });
-  const data = await res.json();
+
+  const data = await parseApiJson<{ error?: string; warning?: string }>(res);
   if (!res.ok) throw new Error(data.error || "Failed to save products");
+
+  return { warning: data.warning || prepared.warning };
 }
 
 export function getPublishedProducts(products: Product[]): Product[] {
@@ -44,7 +62,8 @@ export function getPublishedProducts(products: Product[]): Product[] {
 
 /** @deprecated use fetchCatalogProducts or fetchAdminProducts */
 export async function loadSeedProducts(): Promise<Product[]> {
-  return fetchAdminProducts();
+  const { products } = await fetchAdminProducts();
+  return products;
 }
 
 export function getScoutQueue(): ScoutItem[] {
@@ -97,10 +116,10 @@ export async function importProductsJson(
     body: JSON.stringify({ import: true, data: raw }),
   });
 
-  const data = await res.json();
+  const data = await parseApiJson<{ error?: string; warning?: string }>(res);
   if (!res.ok) throw new Error(data.error || "Import failed");
 
-  const products = await fetchAdminProducts();
+  const { products } = await fetchAdminProducts();
   return { products, warning: data.warning };
 }
 

@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/adminAuth";
-import { parseProductsJson, prepareProductsForSave } from "@/lib/productImport";
+import {
+  capProductsForResponse,
+  parseProductsJson,
+  prepareProductsForSave,
+} from "@/lib/productImport";
 import {
   isProductStoreConfigured,
   loadAllProducts,
@@ -32,8 +36,21 @@ export async function GET() {
     );
   }
 
-  const products = await loadAllProducts();
-  return NextResponse.json({ success: true, count: products.length, products });
+  try {
+    const products = await loadAllProducts();
+    const capped = capProductsForResponse(products);
+    return NextResponse.json({
+      success: true,
+      count: capped.products.length,
+      products: capped.products,
+      warning: capped.warning,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Failed to load products" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function PUT(request: Request) {

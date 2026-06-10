@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { capProductsForResponse } from "@/lib/productImport";
 import {
   getPublishedProducts,
   isProductStoreConfigured,
@@ -15,10 +16,20 @@ export async function GET() {
     );
   }
 
-  const products = await loadAllProducts();
-  return NextResponse.json({
-    success: true,
-    count: products.length,
-    products: getPublishedProducts(products),
-  });
+  try {
+    const products = await loadAllProducts();
+    const published = getPublishedProducts(products);
+    const capped = capProductsForResponse(published);
+    return NextResponse.json({
+      success: true,
+      count: capped.products.length,
+      products: capped.products,
+      warning: capped.warning,
+    });
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Failed to load catalog" },
+      { status: 500 }
+    );
+  }
 }
