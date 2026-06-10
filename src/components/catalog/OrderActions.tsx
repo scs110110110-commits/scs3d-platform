@@ -50,14 +50,14 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
       <button
         type="button"
         onClick={() => openWhatsAppOrder(product)}
-        className={`${compactBtn} bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30`}
+        className={`${compactBtn} bg-zinc-800/60 text-emerald-500/90 hover:bg-zinc-800`}
       >
         WhatsApp
       </button>
       <button
         type="button"
         onClick={() => openOrderEmail(product)}
-        className={`${compactBtn} bg-cyan-600/20 text-cyan-400 hover:bg-cyan-600/30`}
+        className={`${compactBtn} bg-zinc-800/60 text-cyan-600/90 hover:bg-zinc-800`}
       >
         Email
       </button>
