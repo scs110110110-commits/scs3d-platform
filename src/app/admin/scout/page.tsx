@@ -17,11 +17,25 @@ import type { Product, ScoutItem } from "@/lib/types";
 
 const today = () => new Date().toISOString().slice(0, 10);
 
+interface ScoutCronStatus {
+  telegramConfigured: boolean;
+  snapshotConfigured: boolean;
+  cronSecretConfigured: boolean;
+  cronSchedule: string;
+  cronPath: string;
+  snapshot: {
+    date: string;
+    fetchedAt: string;
+    items: { title: string; rank: number; trendScore: number }[];
+  } | null;
+}
+
 export default function ScoutPage() {
   const [queue, setQueue] = useState<ScoutItem[]>([]);
   const [todayCount, setTodayCount] = useState(0);
   const [fetching, setFetching] = useState(false);
   const [fetchError, setFetchError] = useState("");
+  const [cronStatus, setCronStatus] = useState<ScoutCronStatus | null>(null);
   const [form, setForm] = useState({
     title: "",
     sourceUrl: "",
@@ -36,6 +50,11 @@ export default function ScoutPage() {
     const items = getScoutQueue();
     setQueue(items);
     setTodayCount(items.filter((i) => i.scoutedAt.startsWith(today())).length);
+
+    fetch("/api/scout/status", { credentials: "include" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => data && setCronStatus(data))
+      .catch(() => {});
   }, []);
 
   function addToQueue() {
@@ -181,6 +200,47 @@ export default function ScoutPage() {
             <p className="mt-2 text-sm text-emerald-400">🎉 Daily goal reached!</p>
           )}
         </div>
+
+        <section className="mb-10 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6">
+          <h2 className="text-xl font-bold text-white">Daily Telegram Report (Vercel Cron)</h2>
+          <p className="mt-1 text-sm text-zinc-400">
+            Every morning: fetch Reddit + Printables, compare with yesterday, send top 5 rising
+            links to Telegram. You add photos manually here.
+          </p>
+          {cronStatus ? (
+            <div className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
+              <StatusPill
+                ok={cronStatus.cronSecretConfigured}
+                label="CRON_SECRET"
+              />
+              <StatusPill
+                ok={cronStatus.telegramConfigured}
+                label="Telegram bot"
+              />
+              <StatusPill
+                ok={cronStatus.snapshotConfigured}
+                label="Vercel KV / Upstash snapshot"
+              />
+              <p className="text-zinc-500 sm:col-span-2">
+                Schedule: {cronStatus.cronSchedule} · Path:{" "}
+                <code className="text-emerald-400">{cronStatus.cronPath}</code>
+              </p>
+              {cronStatus.snapshot ? (
+                <p className="text-zinc-500 sm:col-span-2">
+                  Last snapshot: {cronStatus.snapshot.date} (
+                  {cronStatus.snapshot.items.length} items) — rising deltas use this baseline.
+                </p>
+              ) : (
+                <p className="text-amber-400/90 sm:col-span-2">
+                  No snapshot yet. First cron run sends today&apos;s top picks; rising comparison
+                  starts on the second day.
+                </p>
+              )}
+            </div>
+          ) : (
+            <p className="mt-3 text-sm text-zinc-600">Loading cron status...</p>
+          )}
+        </section>
 
         <section className="mb-10 rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-6">
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -363,5 +423,19 @@ export default function ScoutPage() {
         </section>
       </main>
     </>
+  );
+}
+
+function StatusPill({ ok, label }: { ok: boolean; label: string }) {
+  return (
+    <span
+      className={`inline-flex w-fit items-center gap-2 rounded-full px-3 py-1 text-xs font-medium ${
+        ok
+          ? "bg-emerald-500/15 text-emerald-300"
+          : "bg-amber-500/15 text-amber-300"
+      }`}
+    >
+      {ok ? "✓" : "○"} {label}
+    </span>
   );
 }
