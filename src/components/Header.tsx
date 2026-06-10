@@ -12,7 +12,7 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-800/30 bg-zinc-950/70 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-zinc-800/30 bg-black/70 backdrop-blur-md">
       <div className="page-wrap flex items-center justify-center py-2.5 sm:py-3">
         <nav className="flex items-center gap-1 sm:gap-2">
           {NAV.map((item) => (

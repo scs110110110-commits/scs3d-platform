@@ -14,7 +14,7 @@ export default function AdminHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-800/40 bg-zinc-950/90 backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-zinc-800/40 bg-black/90 backdrop-blur-md">
       <div className="page-wrap flex items-center justify-between py-2">
         <div className="flex items-center gap-3">
           <Logo size="sm" />

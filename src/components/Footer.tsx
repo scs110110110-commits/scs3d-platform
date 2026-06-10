@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="mt-auto border-t border-zinc-800/30 bg-zinc-950/75 backdrop-blur-sm">
+    <footer className="mt-auto border-t border-zinc-800/30 bg-black/75 backdrop-blur-sm">
       <div className="page-wrap flex flex-col items-center gap-3 py-6 text-center sm:flex-row sm:justify-between sm:text-left">
         <p className="text-xs text-zinc-600">
           © {new Date().getFullYear()} scs3d.com

@@ -64,7 +64,7 @@ export default function RootLayout({
       lang="en-CA"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-zinc-950 text-zinc-100">
+      <body className="min-h-full flex flex-col bg-black text-zinc-100">
         <JsonLd data={getLocalBusinessJsonLd()} />
         {children}
       </body>
