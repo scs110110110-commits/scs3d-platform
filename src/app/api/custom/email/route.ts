@@ -4,6 +4,16 @@ import { BRAND_NAME, BRAND_URL, CONTACT_EMAIL } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
+/** Safe config check — booleans only, no secret values exposed */
+export async function GET() {
+  return NextResponse.json({
+    configured: !!(process.env.SMTP_USER && process.env.SMTP_PASS),
+    hasSmtpUser: !!process.env.SMTP_USER,
+    hasSmtpPass: !!process.env.SMTP_PASS,
+    hasAdminPassword: !!process.env.ADMIN_PASSWORD,
+  });
+}
+
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const MAX_FILES = 6;
 
