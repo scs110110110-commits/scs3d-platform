@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { openCustomWhatsAppRequest } from "@/lib/whatsapp";
+import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 type ContactMethod = "whatsapp" | "email";
 
@@ -115,7 +116,8 @@ export default function CustomRequestForm() {
               : "text-zinc-500 hover:text-zinc-300"
           }`}
         >
-          💬 WhatsApp
+          <WhatsAppIcon className="h-4 w-4" />
+          WhatsApp
         </button>
         <button
           type="button"
