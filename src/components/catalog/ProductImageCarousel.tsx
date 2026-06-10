@@ -32,26 +32,46 @@ export default function ProductImageCarousel({
 
   if (variant === "modal") {
     return (
-      <div className="bg-black">
-        <div className="relative aspect-[5/3] overflow-hidden bg-zinc-800">
+      <div className="bg-zinc-950">
+        <div className="relative flex min-h-[12rem] max-h-[min(50dvh,28rem)] items-center justify-center bg-zinc-950 px-2 py-3">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={current}
             alt={`${product.title} — photo ${index + 1}`}
-            className="h-full w-full object-cover"
+            className="max-h-[min(50dvh,28rem)] w-full object-contain"
           />
+          {hasMultiple && (
+            <>
+              <button
+                type="button"
+                aria-label="Previous photo"
+                onClick={goPrev}
+                className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-lg text-white"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                aria-label="Next photo"
+                onClick={goNext}
+                className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/70 text-lg text-white"
+              >
+                ›
+              </button>
+            </>
+          )}
         </div>
 
         {hasMultiple && (
-          <div className="flex gap-2 overflow-x-auto border-t border-zinc-800 px-4 py-3">
+          <div className="flex gap-2 overflow-x-auto border-t border-zinc-800 px-3 py-3">
             {images.map((url, i) => (
               <button
-                key={`${url}-${i}`}
+                key={`${url.slice(0, 32)}-${i}`}
                 type="button"
                 aria-label={`View photo ${i + 1}`}
                 aria-current={i === index ? "true" : undefined}
                 onClick={() => setIndex(i)}
-                className={`h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 transition ${
+                className={`h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 transition sm:h-16 sm:w-16 ${
                   i === index
                     ? "border-cyan-500 ring-2 ring-cyan-500/30"
                     : "border-zinc-700 opacity-70 hover:border-zinc-500 hover:opacity-100"
