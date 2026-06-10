@@ -55,19 +55,13 @@ function isValidImage(url: string): boolean {
   );
 }
 
-export async function fetchRedditTrending(limit = 10): Promise<FetchedTrendItem[]> {
-  const res = await fetch(
-    `https://www.reddit.com/r/3Dprinting/hot.json?limit=${limit * 2}`,
-    {
-      headers: { "User-Agent": "SCS3D-TrendScout/1.0" },
-      next: { revalidate: 3600 },
-    }
-  );
+const REDDIT_HEADERS = {
+  "User-Agent":
+    "Mozilla/5.0 (compatible; SCS3D-Scout/1.0; +https://scs3d.com)",
+  Accept: "application/json",
+};
 
-  if (!res.ok) throw new Error(`Reddit fetch failed: ${res.status}`);
-
-  const json = await res.json();
-  const posts: RedditPost[] = json?.data?.children ?? [];
+function parseRedditPosts(posts: RedditPost[], limit: number): FetchedTrendItem[] {
   const items: FetchedTrendItem[] = [];
 
   for (const post of posts) {
@@ -101,6 +95,37 @@ export async function fetchRedditTrending(limit = 10): Promise<FetchedTrendItem[
   return items;
 }
 
+async function fetchRedditJson(url: string): Promise<RedditPost[]> {
+  const res = await fetch(url, {
+    headers: REDDIT_HEADERS,
+    cache: "no-store",
+  });
+  if (!res.ok) return [];
+
+  const json = await res.json();
+  return json?.data?.children ?? [];
+}
+
+export async function fetchRedditTrending(limit = 10): Promise<FetchedTrendItem[]> {
+  const query = `limit=${limit * 2}`;
+  const urls = [
+    `https://www.reddit.com/r/3Dprinting/hot.json?${query}`,
+    `https://old.reddit.com/r/3Dprinting/hot.json?${query}`,
+  ];
+
+  for (const url of urls) {
+    try {
+      const posts = await fetchRedditJson(url);
+      const items = parseRedditPosts(posts, limit);
+      if (items.length > 0) return items;
+    } catch {
+      // try next Reddit endpoint
+    }
+  }
+
+  return [];
+}
+
 export async function fetchPrintablesTrending(): Promise<FetchedTrendItem[]> {
   try {
     const res = await fetch(
@@ -128,7 +153,7 @@ export async function fetchPrintablesTrending(): Promise<FetchedTrendItem[]> {
 
 export async function fetchAllTrending(limit = 10): Promise<FetchedTrendItem[]> {
   const [reddit, printables] = await Promise.all([
-    fetchRedditTrending(limit),
+    fetchRedditTrending(limit).catch(() => [] as FetchedTrendItem[]),
     fetchPrintablesTrending(),
   ]);
 

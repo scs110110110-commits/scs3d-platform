@@ -24,6 +24,13 @@ export async function GET(request: Request) {
 
   try {
     const items = await fetchAllTrending(20);
+    if (items.length === 0) {
+      return NextResponse.json(
+        { error: "No trending items fetched from Reddit or Printables" },
+        { status: 502 }
+      );
+    }
+
     const previous = await loadSnapshot();
     const rising = computeRising(previous, items, 5);
     const snapshot = buildSnapshot(items);
