@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import CustomRequestForm from "@/components/custom/CustomRequestForm";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import PublicShell from "@/components/PublicShell";
 
 export const metadata: Metadata = {
   title: "Custom Request",
@@ -11,10 +12,10 @@ export const metadata: Metadata = {
 
 export default function CustomPage() {
   return (
-    <>
+    <PublicShell>
       <Header />
       <main className="flex-1">
-        <section className="border-b border-zinc-800/40 bg-zinc-950/50">
+        <section className="border-b border-zinc-800/30 bg-zinc-950/40 backdrop-blur-[2px]">
           <div className="page-wrap py-4 sm:py-5">
             <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-cyan-500/80">
               Custom Project
@@ -35,6 +36,6 @@ export default function CustomPage() {
         </section>
       </main>
       <Footer />
-    </>
+    </PublicShell>
   );
 }

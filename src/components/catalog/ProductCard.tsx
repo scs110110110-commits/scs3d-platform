@@ -21,7 +21,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
   const badge = TREND_BADGES[product.status];
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-lg border border-zinc-800/50 bg-zinc-900/30 transition hover:border-zinc-700/80">
+    <article className="group flex flex-col overflow-hidden rounded-lg border border-zinc-800/50 bg-zinc-900/85 backdrop-blur-sm transition hover:border-zinc-700/80">
       <div className="relative">
         <ProductImageCarousel
           product={product}

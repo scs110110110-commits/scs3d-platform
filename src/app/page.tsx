@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import CatalogPage from "@/components/catalog/CatalogPage";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import PublicShell from "@/components/PublicShell";
 import { SEO_DESCRIPTION, SEO_TITLE } from "@/lib/seo";
 
 export const metadata: Metadata = {
@@ -11,12 +12,12 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <>
+    <PublicShell>
       <Header />
       <main className="flex-1">
         <CatalogPage />
       </main>
       <Footer />
-    </>
+    </PublicShell>
   );
 }
