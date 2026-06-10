@@ -20,6 +20,7 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+  const [notice, setNotice] = useState("");
 
   const refresh = useCallback(async () => {
     setError("");
@@ -130,11 +131,16 @@ export default function AdminPage() {
                 onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
+                  setError("");
+                  setNotice("");
                   try {
-                    const data = await importProductsJson(file);
+                    const { products: data, warning } = await importProductsJson(file);
                     setProducts(data);
+                    if (warning) setNotice(warning);
                   } catch (err) {
                     setError(err instanceof Error ? err.message : "Import failed");
+                  } finally {
+                    e.target.value = "";
                   }
                 }}
               />
@@ -159,6 +165,12 @@ export default function AdminPage() {
         {error && (
           <p className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-sm text-red-300">
             {error}
+          </p>
+        )}
+
+        {notice && (
+          <p className="mb-4 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm text-amber-200">
+            {notice}
           </p>
         )}
 
@@ -238,8 +250,9 @@ export default function AdminPage() {
         )}
 
         <p className="mt-8 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4 text-sm text-emerald-200/80">
-          ✅ Products are stored on the server (Upstash Redis). PC, phone, and all visitors see
-          the same catalog after you save.
+          ✅ Products save to the server — visible on all devices. JSON import: use a{" "}
+          <strong>.json</strong> array; if upload fails, embedded photos may be too large — use
+          image URLs or re-add photos after import.
         </p>
       </main>
     </>

@@ -74,22 +74,34 @@ export function exportProductsJson(products: Product[]): void {
   URL.revokeObjectURL(url);
 }
 
-export async function importProductsJson(file: File): Promise<Product[]> {
-  const data = await new Promise<Product[]>((resolve, reject) => {
+export async function importProductsJson(
+  file: File
+): Promise<{ products: Product[]; warning?: string }> {
+  const raw = await new Promise<unknown>((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => {
       try {
-        resolve(JSON.parse(reader.result as string) as Product[]);
+        resolve(JSON.parse(reader.result as string));
       } catch {
-        reject(new Error("Invalid JSON file"));
+        reject(new Error("Invalid JSON file — check format"));
       }
     };
     reader.onerror = () => reject(new Error("Could not read file"));
     reader.readAsText(file);
   });
 
-  await saveProducts(data);
-  return data;
+  const res = await fetch("/api/admin/products", {
+    method: "PUT",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ import: true, data: raw }),
+  });
+
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Import failed");
+
+  const products = await fetchAdminProducts();
+  return { products, warning: data.warning };
 }
 
 export async function resetToSeed(): Promise<Product[]> {

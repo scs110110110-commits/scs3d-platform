@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/adminAuth";
+import { parseProductsJson, prepareProductsForSave } from "@/lib/productImport";
 import {
   isProductStoreConfigured,
   loadAllProducts,
@@ -49,22 +50,37 @@ export async function PUT(request: Request) {
 
   try {
     const body = await request.json();
-    const products = body?.products as Product[] | undefined;
+    let products: Product[];
 
-    if (!Array.isArray(products)) {
-      return NextResponse.json({ error: "products array required" }, { status: 400 });
+    if (body?.import === true) {
+      products = parseProductsJson(body.data ?? body.products ?? body);
+    } else {
+      const list = body?.products as Product[] | undefined;
+      if (!Array.isArray(list)) {
+        return NextResponse.json({ error: "products array required" }, { status: 400 });
+      }
+      products = list;
     }
 
-    const saved = await saveAllProducts(products);
-    if (!saved) {
-      return NextResponse.json({ error: "Failed to save products" }, { status: 500 });
+    const prepared = prepareProductsForSave(products);
+    const saved = await saveAllProducts(prepared.products);
+
+    if (!saved.ok) {
+      return NextResponse.json(
+        { error: saved.error || "Failed to save products" },
+        { status: 500 }
+      );
     }
 
-    return NextResponse.json({ success: true, count: products.length });
+    return NextResponse.json({
+      success: true,
+      count: prepared.products.length,
+      warning: prepared.warning,
+    });
   } catch (err) {
     return NextResponse.json(
       { error: err instanceof Error ? err.message : "Save failed" },
-      { status: 500 }
+      { status: 400 }
     );
   }
 }

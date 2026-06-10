@@ -36,15 +36,21 @@ export async function loadAllProducts(): Promise<Product[]> {
   }
 }
 
-export async function saveAllProducts(products: Product[]): Promise<boolean> {
+export async function saveAllProducts(products: Product[]): Promise<{
+  ok: boolean;
+  error?: string;
+}> {
   const redis = getRedis();
-  if (!redis) return false;
+  if (!redis) {
+    return { ok: false, error: "Redis not configured" };
+  }
 
   try {
     await redis.set(PRODUCTS_KEY, products);
-    return true;
-  } catch {
-    return false;
+    return { ok: true };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Redis save failed";
+    return { ok: false, error: message };
   }
 }
 
