@@ -1,20 +1,33 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { BRAND_NAME, BRAND_URL, CONTACT_EMAIL } from "@/lib/config";
+import { getRuntimeEnv } from "@/lib/env";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
+function getSmtpConfig() {
+  const smtpUser = getRuntimeEnv("SMTP_USER", "EMAIL_USER", "GMAIL_USER");
+  const smtpPass = getRuntimeEnv("SMTP_PASS", "EMAIL_PASS", "GMAIL_APP_PASSWORD");
+  const smtpHost = getRuntimeEnv("SMTP_HOST") || "smtp.gmail.com";
+  const smtpPort = Number(getRuntimeEnv("SMTP_PORT") || "587");
+  return { smtpUser, smtpPass, smtpHost, smtpPort };
+}
 
 /** Safe config check — booleans/lengths only, no secret values exposed */
 export async function GET() {
-  const smtpUser = process.env.SMTP_USER ?? "";
-  const smtpPass = process.env.SMTP_PASS ?? "";
+  const { smtpUser, smtpPass } = getSmtpConfig();
+  const envKeys = Object.keys(process.env)
+    .filter((k) => /^(SMTP|ADMIN|EMAIL|MAIL|GMAIL)/i.test(k))
+    .sort();
   return NextResponse.json({
     configured: !!(smtpUser && smtpPass),
     hasSmtpUser: !!smtpUser,
     hasSmtpPass: !!smtpPass,
     smtpUserLength: smtpUser.length,
     smtpPassLength: smtpPass.length,
-    hasAdminPassword: !!process.env.ADMIN_PASSWORD,
+    hasAdminPassword: !!getRuntimeEnv("ADMIN_PASSWORD"),
+    envKeys,
   });
 }
 
@@ -37,10 +50,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email is required." }, { status: 400 });
     }
 
-    const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
-    const smtpPort = Number(process.env.SMTP_PORT || 587);
-    const smtpUser = process.env.SMTP_USER;
-    const smtpPass = process.env.SMTP_PASS;
+    const { smtpUser, smtpPass, smtpHost, smtpPort } = getSmtpConfig();
 
     if (!smtpUser || !smtpPass) {
       return NextResponse.json(
