@@ -44,13 +44,9 @@ function LoginForm() {
         onSubmit={handleSubmit}
         className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-8"
       >
-        <div className="mb-6 flex justify-center">
-          <Logo
-            size="lg"
-            title="SCS3D Admin"
-            tagline="Session expires after 1 hour"
-            taglineClassName="text-sm text-zinc-500"
-          />
+        <div className="mb-5 flex flex-col items-center gap-2">
+          <Logo size="lg" />
+          <p className="text-xs text-zinc-600">Admin · session expires after 1 hour</p>
         </div>
 
         <input

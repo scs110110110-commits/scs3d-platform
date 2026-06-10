@@ -15,8 +15,8 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-zinc-800/40 bg-zinc-950/90 backdrop-blur-md">
       <div className="page-wrap flex items-center justify-between py-2">
-        <Link href="/" className="group">
-          <Logo size="sm" tagline="" />
+        <Link href="/" className="group shrink-0">
+          <Logo size="sm" />
         </Link>
 
         <nav className="flex items-center gap-0.5">

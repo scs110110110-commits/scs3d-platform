@@ -7,10 +7,7 @@ export default function Footer() {
       <div className="page-wrap py-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-4">
-            <Logo size="sm" title="SCS3D" tagline="" />
-            <p className="max-w-xs text-xs leading-relaxed text-zinc-600">
-              3D printing &amp; custom CAD design
-            </p>
+            <Logo size="sm" />
           </div>
           <div className="flex gap-4 text-xs">
             <Link href="/" className="text-zinc-500 hover:text-zinc-300">

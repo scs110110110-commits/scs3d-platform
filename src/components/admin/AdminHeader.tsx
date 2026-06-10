@@ -14,33 +14,32 @@ export default function AdminHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-800/80 bg-zinc-950/90 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-        <Logo
-          size="sm"
-          title="SCS3D Admin"
-          tagline="Session · 1h expiry"
-          taglineClassName="text-xs text-zinc-500"
-        />
+    <header className="sticky top-0 z-40 border-b border-zinc-800/40 bg-zinc-950/90 backdrop-blur-md">
+      <div className="page-wrap flex items-center justify-between py-2">
+        <div className="flex items-center gap-3">
+          <Logo size="sm" />
+          <span className="hidden text-[10px] text-zinc-600 sm:inline">Admin · 1h session</span>
+        </div>
 
-        <nav className="flex items-center gap-4">
-          <Link href="/admin" className="text-sm text-zinc-400 hover:text-cyan-400">
+        <nav className="flex items-center gap-3">
+          <Link href="/admin" className="text-xs text-zinc-500 hover:text-zinc-300">
             Products
           </Link>
-          <Link href="/admin/scout" className="text-sm text-zinc-400 hover:text-violet-400">
-            Trend Scout
+          <Link href="/admin/scout" className="text-xs text-zinc-500 hover:text-violet-400">
+            Scout
           </Link>
           <a
             href="/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm text-zinc-500 hover:text-white"
+            className="text-xs text-zinc-600 hover:text-zinc-300"
           >
-            View Site ↗
+            Site ↗
           </a>
           <button
+            type="button"
             onClick={handleLogout}
-            className="rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-400 hover:bg-zinc-800"
+            className="rounded-md border border-zinc-800 px-2 py-1 text-[10px] text-zinc-500 hover:bg-zinc-900"
           >
             Logout
           </button>
