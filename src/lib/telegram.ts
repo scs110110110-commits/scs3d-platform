@@ -51,7 +51,7 @@ export function formatDailyRisingReport(
   }
 
   lines.push(
-    `Fetched ${options.fetchedCount} items from Reddit + Printables.`,
+    `Fetched ${options.fetchedCount} items from Cults3D + Printables.`,
     options.snapshotSaved
       ? "Snapshot saved for tomorrow's comparison."
       : "⚠️ Snapshot not saved — add Vercel KV / Upstash env vars.",

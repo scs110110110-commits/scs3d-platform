@@ -19,6 +19,7 @@ const today = () => new Date().toISOString().slice(0, 10);
 
 interface ScoutCronStatus {
   telegramConfigured: boolean;
+  cults3dConfigured: boolean;
   snapshotConfigured: boolean;
   cronSecretConfigured: boolean;
   cronSchedule: string;
@@ -204,7 +205,7 @@ export default function ScoutPage() {
         <section className="mb-10 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 p-6">
           <h2 className="text-xl font-bold text-white">Daily Telegram Report (Vercel Cron)</h2>
           <p className="mt-1 text-sm text-zinc-400">
-            Every morning: fetch Reddit + Printables, compare with yesterday, send top 5 rising
+            Every morning: fetch Cults3D + Printables, compare with yesterday, send top 5 rising
             links to Telegram. You add photos manually here.
           </p>
           {cronStatus ? (
@@ -216,6 +217,10 @@ export default function ScoutPage() {
               <StatusPill
                 ok={cronStatus.telegramConfigured}
                 label="Telegram bot"
+              />
+              <StatusPill
+                ok={cronStatus.cults3dConfigured}
+                label="Cults3D API"
               />
               <StatusPill
                 ok={cronStatus.snapshotConfigured}
@@ -247,7 +252,7 @@ export default function ScoutPage() {
             <div>
               <h2 className="text-xl font-bold text-white">Auto-Fetch Rising Products</h2>
               <p className="mt-1 text-sm text-zinc-400">
-                Pulls trending items from Reddit r/3Dprinting and Printables automatically.
+                Pulls trending items from Cults3D and Printables automatically.
               </p>
             </div>
             <button

@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     const items = await fetchAllTrending(20);
     if (items.length === 0) {
       return NextResponse.json(
-        { error: "No trending items fetched from Reddit or Printables" },
+        { error: "No trending items fetched from Cults3D or Printables" },
         { status: 502 }
       );
     }

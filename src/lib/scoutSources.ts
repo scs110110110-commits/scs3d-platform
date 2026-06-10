@@ -26,12 +26,12 @@ export const SCOUT_SOURCES: ScoutSource[] = [
     checkFrequency: "Daily",
   },
   {
-    id: "reddit",
-    name: "r/3Dprinting",
-    url: "https://www.reddit.com/r/3Dprinting/top/?t=week",
-    description: "Weekly viral prints and demand signals",
-    icon: "💬",
-    checkFrequency: "Weekly",
+    id: "cults3d",
+    name: "Cults3D",
+    url: "https://cults3d.com/en/3d-model?sort=likes",
+    description: "Most liked models — auto-fetched via API",
+    icon: "🔥",
+    checkFrequency: "Daily",
   },
   {
     id: "myminifactory",

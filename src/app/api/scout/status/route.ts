@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/adminAuth";
+import { isCults3dConfigured } from "@/lib/cults3dFetcher";
 import { isSnapshotStorageConfigured, loadSnapshot } from "@/lib/scoutSnapshot";
 import { isTelegramConfigured } from "@/lib/telegram";
 import { getRuntimeEnv } from "@/lib/env";
@@ -19,6 +20,7 @@ export async function GET() {
 
   return NextResponse.json({
     telegramConfigured: isTelegramConfigured(),
+    cults3dConfigured: isCults3dConfigured(),
     snapshotConfigured: isSnapshotStorageConfigured(),
     cronSecretConfigured: Boolean(getRuntimeEnv("CRON_SECRET")),
     snapshot,
