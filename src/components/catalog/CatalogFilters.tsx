@@ -22,7 +22,7 @@ export default function CatalogFilters({
         placeholder="Search prints..."
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="w-full rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 outline-none focus:border-zinc-600"
+        className="w-full max-w-[11rem] rounded-md border border-zinc-800 bg-zinc-900/60 px-2.5 py-1 text-xs text-zinc-200 placeholder-zinc-600 outline-none focus:border-zinc-600 sm:max-w-[12rem]"
       />
       <div className="flex flex-wrap gap-1.5">
         <button
