@@ -28,6 +28,9 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   cursor: default;
+  caret-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .page-wrap {
@@ -43,19 +46,6 @@ body {
   }
 }
 
-/* Prevent blinking text caret when clicking non-input UI */
-button,
-a,
-nav,
-header,
-footer,
-article,
-label,
-[role="button"] {
-  user-select: none;
-  -webkit-user-select: none;
-}
-
 input,
 textarea,
 select,
@@ -63,6 +53,7 @@ select,
   user-select: text;
   -webkit-user-select: text;
   cursor: text;
+  caret-color: #22d3ee;
 }
 
 /* Mouse click focus ring only — keyboard focus stays visible */
