@@ -15,7 +15,7 @@ export default function CustomPage() {
       <Header />
       <main className="flex-1">
         <section className="border-b border-zinc-800/40 bg-zinc-950/50">
-          <div className="page-wrap py-5 sm:py-6">
+          <div className="page-wrap py-4 sm:py-5">
             <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-cyan-500/80">
               Custom Project
             </p>
