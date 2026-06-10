@@ -3,28 +3,25 @@ import Logo from "@/components/Logo";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-zinc-800/60 bg-zinc-950">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
-        <div className="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
-          <div>
+    <footer className="mt-auto border-t border-zinc-800/40 bg-zinc-950">
+      <div className="page-wrap py-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4">
             <Logo size="sm" title="SCS3D" tagline="" />
-            <p className="mt-3 max-w-xs text-sm leading-relaxed text-zinc-500">
-              Professional 3D printing and custom CAD design. Order via WhatsApp.
+            <p className="max-w-xs text-xs leading-relaxed text-zinc-600">
+              3D printing &amp; custom CAD design
             </p>
           </div>
-          <div className="flex gap-8 text-sm">
-            <div className="space-y-2">
-              <p className="font-semibold text-zinc-300">Navigate</p>
-              <Link href="/" className="block text-zinc-500 hover:text-white">
-                Trending
-              </Link>
-              <Link href="/custom" className="block text-zinc-500 hover:text-white">
-                Custom Request
-              </Link>
-            </div>
+          <div className="flex gap-4 text-xs">
+            <Link href="/" className="text-zinc-500 hover:text-zinc-300">
+              Trending
+            </Link>
+            <Link href="/custom" className="text-zinc-500 hover:text-zinc-300">
+              Custom Request
+            </Link>
           </div>
         </div>
-        <p className="mt-10 border-t border-zinc-800/60 pt-6 text-xs text-zinc-600">
+        <p className="mt-4 text-[11px] text-zinc-700">
           © {new Date().getFullYear()} scs3d.com
         </p>
       </div>

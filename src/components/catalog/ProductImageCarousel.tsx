@@ -33,7 +33,7 @@ export default function ProductImageCarousel({
   if (variant === "modal") {
     return (
       <div className="bg-zinc-950">
-        <div className="relative aspect-[4/3] overflow-hidden bg-zinc-800 sm:aspect-[16/10]">
+        <div className="relative aspect-[5/3] overflow-hidden bg-zinc-800">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={current}

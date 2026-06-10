@@ -16,21 +16,22 @@ export default function CatalogFilters({
   onSearchChange,
 }: CatalogFiltersProps) {
   return (
-    <div className="mb-8 space-y-4">
+    <div className="mb-4 space-y-2.5">
       <input
         type="search"
-        placeholder="Search trending prints..."
+        placeholder="Search prints..."
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
-        className="w-full rounded-xl border border-zinc-700 bg-zinc-800/80 px-4 py-3 text-white placeholder-zinc-500 outline-none focus:border-cyan-500"
+        className="w-full rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200 placeholder-zinc-600 outline-none focus:border-zinc-600"
       />
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         <button
+          type="button"
           onClick={() => onCategoryChange("all")}
-          className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+          className={`rounded-md px-2.5 py-1 text-xs font-medium transition ${
             activeCategory === "all"
-              ? "bg-cyan-600 text-white"
-              : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
+              ? "bg-zinc-700 text-zinc-100"
+              : "bg-zinc-900/60 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
           }`}
         >
           All
@@ -38,11 +39,12 @@ export default function CatalogFilters({
         {CATEGORIES.map((cat) => (
           <button
             key={cat}
+            type="button"
             onClick={() => onCategoryChange(cat)}
-            className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+            className={`rounded-md px-2.5 py-1 text-xs font-medium transition ${
               activeCategory === cat
-                ? "bg-cyan-600 text-white"
-                : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700"
+                ? "bg-zinc-700 text-zinc-100"
+                : "bg-zinc-900/60 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-300"
             }`}
           >
             {cat}

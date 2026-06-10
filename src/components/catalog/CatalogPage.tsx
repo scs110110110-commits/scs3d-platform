@@ -41,7 +41,7 @@ export default function CatalogPage() {
     <>
       <CatalogHero />
 
-      <div id="catalog" className="mx-auto max-w-7xl px-4 pb-24 sm:px-6">
+      <div id="catalog" className="page-wrap pb-10 pt-4">
         <CatalogFilters
           activeCategory={category}
           onCategoryChange={setCategory}
@@ -50,9 +50,9 @@ export default function CatalogPage() {
         />
 
         {loading ? (
-          <div className="py-20 text-center text-zinc-500">Loading catalog...</div>
+          <div className="py-10 text-center text-sm text-zinc-600">Loading catalog...</div>
         ) : filtered.length === 0 ? (
-          <div className="py-20 text-center text-zinc-500">No products found.</div>
+          <div className="py-10 text-center text-sm text-zinc-600">No products found.</div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((product) => (

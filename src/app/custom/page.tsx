@@ -14,23 +14,22 @@ export default function CustomPage() {
     <>
       <Header />
       <main className="flex-1">
-        <section className="border-b border-zinc-800/50 py-16 sm:py-20">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-cyan-400">
+        <section className="border-b border-zinc-800/40 bg-zinc-950/50">
+          <div className="page-wrap py-5 sm:py-6">
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-cyan-500/80">
               Custom Project
             </p>
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+            <h1 className="text-xl font-semibold tracking-tight text-zinc-100 sm:text-2xl">
               Bring Your Idea to Life
             </h1>
-            <p className="max-w-2xl text-lg text-zinc-400">
-              Upload reference photos, describe your project, and send everything to us
-              on WhatsApp for a custom quote.
+            <p className="mt-1.5 max-w-xl text-sm text-zinc-500">
+              Describe your project and reach us via WhatsApp or email.
             </p>
           </div>
         </section>
 
-        <section className="py-12 sm:py-16">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <section className="py-6 sm:py-8">
+          <div className="page-wrap max-w-3xl">
             <CustomRequestForm />
           </div>
         </section>

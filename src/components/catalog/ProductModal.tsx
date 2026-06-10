@@ -16,51 +16,52 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
   const badge = TREND_BADGES[product.status];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center p-4 sm:items-center">
-      <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-zinc-700 bg-zinc-900 shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-end justify-center p-3 sm:items-center">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="relative max-h-[88vh] w-full max-w-lg overflow-y-auto rounded-xl border border-zinc-800 bg-zinc-900 shadow-xl">
         <button
+          type="button"
           onClick={onClose}
-          className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-zinc-800 text-zinc-400 hover:text-white"
+          className="absolute right-2.5 top-2.5 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-zinc-800/90 text-xs text-zinc-400 hover:text-zinc-200"
         >
           ✕
         </button>
 
         <ProductImageCarousel key={product.id} product={product} variant="modal" />
 
-        <div className="p-6">
-          <div className="mb-2 flex flex-wrap gap-2">
-            <span className="rounded-full bg-zinc-800 px-3 py-1 text-xs text-zinc-400">
+        <div className="p-4">
+          <div className="mb-2 flex flex-wrap gap-1.5">
+            <span className="rounded-md bg-zinc-800/80 px-2 py-0.5 text-[10px] text-zinc-500">
               {product.category}
             </span>
-            <span className="rounded-full bg-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-400">
-              {badge.emoji} {badge.label} · Score {product.trendScore}
+            <span className="rounded-md bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium text-emerald-500/90">
+              {badge.emoji} {badge.label} · {product.trendScore}
             </span>
           </div>
 
-          <h2 className="mb-2 text-2xl font-bold text-white">{product.title}</h2>
-          <p className="mb-4 text-zinc-400">{product.description}</p>
+          <h2 className="mb-1.5 text-lg font-semibold text-zinc-100">{product.title}</h2>
+          <p className="mb-3 text-sm leading-relaxed text-zinc-500">{product.description}</p>
 
-          <dl className="mb-6 grid grid-cols-2 gap-3 text-sm">
+          <dl className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <dt className="text-zinc-500">Material</dt>
-              <dd className="text-white">{product.material}</dd>
+              <dt className="text-zinc-600">Material</dt>
+              <dd className="text-zinc-300">{product.material}</dd>
             </div>
             <div>
-              <dt className="mb-1.5 text-zinc-500">Quote</dt>
+              <dt className="mb-1 text-zinc-600">Quote</dt>
               <dd>
                 <OrderActions product={product} variant="compact" />
               </dd>
             </div>
             {product.sourceName && (
               <div className="col-span-2">
-                <dt className="text-zinc-500">Trend Source</dt>
+                <dt className="text-zinc-600">Trend Source</dt>
                 <dd>
                   <a
                     href={product.sourceUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-cyan-400 hover:underline"
+                    className="text-cyan-600/90 hover:text-cyan-500"
                   >
                     {product.sourceName} ↗
                   </a>

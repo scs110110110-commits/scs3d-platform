@@ -13,21 +13,21 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-800/60 glass-panel">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6">
+    <header className="sticky top-0 z-40 border-b border-zinc-800/40 bg-zinc-950/90 backdrop-blur-md">
+      <div className="page-wrap flex items-center justify-between py-2">
         <Link href="/" className="group">
-          <Logo size="md" />
+          <Logo size="sm" tagline="" />
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="flex items-center gap-0.5">
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition ${
+              className={`rounded-md px-2.5 py-1.5 text-xs font-medium transition ${
                 pathname === item.href
-                  ? "bg-zinc-800 text-white"
-                  : "text-zinc-400 hover:bg-zinc-800/60 hover:text-white"
+                  ? "bg-zinc-800/80 text-zinc-100"
+                  : "text-zinc-500 hover:bg-zinc-800/50 hover:text-zinc-200"
               }`}
             >
               {item.label}

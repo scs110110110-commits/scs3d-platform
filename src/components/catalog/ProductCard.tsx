@@ -21,7 +21,7 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
   const badge = TREND_BADGES[product.status];
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-xl border border-zinc-800/80 bg-zinc-900/40 transition duration-300 hover:-translate-y-0.5 hover:border-zinc-600 hover:shadow-xl hover:shadow-black/30">
+    <article className="group flex flex-col overflow-hidden rounded-lg border border-zinc-800/50 bg-zinc-900/30 transition hover:border-zinc-700/80">
       <div className="relative">
         <ProductImageCarousel
           product={product}
@@ -35,11 +35,11 @@ export default function ProductCard({ product, onSelect }: ProductCardProps) {
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-3">
+      <div className="flex flex-1 flex-col p-2.5">
         <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
           {product.category}
         </p>
-        <h3 className="mb-1 line-clamp-1 text-sm font-semibold tracking-tight text-white">
+        <h3 className="mb-1 line-clamp-1 text-xs font-medium tracking-tight text-zinc-200">
           {product.title}
         </h3>
         <p className="mb-2 line-clamp-2 flex-1 text-[11px] leading-relaxed text-zinc-400">

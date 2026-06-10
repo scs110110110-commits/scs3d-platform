@@ -2,24 +2,19 @@ import { BRAND_TAGLINE } from "@/lib/config";
 
 export default function CatalogHero() {
   return (
-    <section className="relative overflow-hidden border-b border-zinc-800/50">
-      <div className="pointer-events-none absolute inset-0 grid-bg opacity-40" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-emerald-500/5 via-transparent to-transparent" />
-
-      <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20">
-        <div className="max-w-3xl">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-400">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-            Live Trending Catalog
+    <section className="border-b border-zinc-800/40 bg-zinc-950/50">
+      <div className="page-wrap py-5 sm:py-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-emerald-500/80">
+              Trending Catalog
+            </p>
+            <h1 className="text-xl font-semibold tracking-tight text-zinc-100 sm:text-2xl">
+              3D Design &amp;{" "}
+              <span className="gradient-text">Printing Studio</span>
+            </h1>
           </div>
-
-          <h1 className="mb-5 text-4xl font-bold leading-[1.1] tracking-tight text-white sm:text-6xl">
-            3D Design &amp;
-            <br />
-            <span className="gradient-text">Printing Studio</span>
-          </h1>
-
-          <p className="max-w-xl text-lg leading-relaxed text-zinc-400">
+          <p className="max-w-md text-sm leading-snug text-zinc-500 sm:text-right">
             {BRAND_TAGLINE}
           </p>
         </div>
