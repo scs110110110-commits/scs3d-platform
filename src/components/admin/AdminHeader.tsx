@@ -28,6 +28,9 @@ export default function AdminHeader() {
           <Link href="/admin/scout" className="text-xs text-zinc-500 hover:text-violet-400">
             Scout
           </Link>
+          <Link href="/admin/analytics" className="text-xs text-zinc-500 hover:text-emerald-400">
+            Analytics
+          </Link>
           <a
             href="/"
             target="_blank"
