@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { normalizePagePath } from "@/lib/analyticsStore";
 
-const TRACKED_PATHS = new Set(["/", "/custom"]);
+const TRACKED_PATHS = new Set(["/", "/solutions", "/custom"]);
 const DEDUPE_MS = 30_000;
 
 export default function PageViewTracker() {

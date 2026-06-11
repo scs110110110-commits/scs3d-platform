@@ -5,6 +5,12 @@ import Link from "next/link";
 import ProductForm, { emptyProduct } from "@/components/admin/ProductForm";
 import AdminHeader from "@/components/admin/AdminHeader";
 import {
+  CATALOG_SECTIONS,
+  SECTION_LABELS,
+  type CatalogSection,
+} from "@/lib/config";
+import { getProductSection } from "@/lib/productSection";
+import {
   exportProductsJson,
   fetchAdminProducts,
   importProductsJson,
@@ -21,6 +27,11 @@ export default function AdminPage() {
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
+  const [sectionFilter, setSectionFilter] = useState<CatalogSection | "all">("all");
+
+  const visibleProducts = products.filter((product) =>
+    sectionFilter === "all" ? true : getProductSection(product) === sectionFilter
+  );
 
   const refresh = useCallback(async () => {
     setError("");
@@ -114,7 +125,10 @@ export default function AdminPage() {
             </Link>
             <button
               onClick={() => {
-                setEditing(emptyProduct());
+                setEditing({
+                  ...emptyProduct(),
+                  section: sectionFilter === "all" ? "trending" : sectionFilter,
+                });
                 setIsNew(true);
               }}
               className="rounded-xl bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-500"
@@ -183,6 +197,32 @@ export default function AdminPage() {
           <p className="mb-4 text-sm text-cyan-400">Saving to server...</p>
         )}
 
+        <div className="mb-6 flex flex-wrap gap-2">
+          <button
+            onClick={() => setSectionFilter("all")}
+            className={`rounded-lg px-3 py-1.5 text-xs font-medium ${
+              sectionFilter === "all"
+                ? "bg-zinc-700 text-white"
+                : "border border-zinc-700 text-zinc-400 hover:bg-zinc-800"
+            }`}
+          >
+            All tabs
+          </button>
+          {CATALOG_SECTIONS.map((section) => (
+            <button
+              key={section}
+              onClick={() => setSectionFilter(section)}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium ${
+                sectionFilter === section
+                  ? "bg-zinc-700 text-white"
+                  : "border border-zinc-700 text-zinc-400 hover:bg-zinc-800"
+              }`}
+            >
+              {SECTION_LABELS[section]}
+            </button>
+          ))}
+        </div>
+
         {editing && (
           <div className="mb-8">
             <ProductForm
@@ -202,7 +242,7 @@ export default function AdminPage() {
           <p className="text-zinc-500">Loading products...</p>
         ) : (
           <div className="space-y-3">
-            {products.map((product) => (
+            {visibleProducts.map((product) => (
               <div
                 key={product.id}
                 className="flex flex-wrap items-center gap-4 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4"
@@ -216,6 +256,9 @@ export default function AdminPage() {
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold text-white">{product.title}</h3>
+                    <span className="rounded bg-violet-500/15 px-2 py-0.5 text-xs text-violet-300">
+                      {SECTION_LABELS[getProductSection(product)]}
+                    </span>
                     {!product.published && (
                       <span className="rounded bg-zinc-700 px-2 py-0.5 text-xs text-zinc-400">
                         Draft

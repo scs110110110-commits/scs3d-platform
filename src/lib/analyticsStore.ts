@@ -5,6 +5,7 @@ const DAILY_PREFIX = "scs3d:analytics:pages:daily:";
 
 export const PAGE_LABELS: Record<string, string> = {
   "/": "Home / Catalog",
+  "/solutions": "Custom Solutions",
   "/custom": "Custom Request",
 };
 

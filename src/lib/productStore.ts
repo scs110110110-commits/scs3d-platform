@@ -6,7 +6,11 @@ import {
   productHasEmbeddedImages,
   repairProductsFromImageStore,
 } from "@/lib/productImageStore";
+import type { CatalogSection } from "@/lib/config";
+import { getProductSection } from "@/lib/productSection";
 import type { Product } from "@/lib/types";
+
+export { getProductSection };
 
 const PRODUCTS_KEY = "scs3d:catalog:products";
 
@@ -83,8 +87,11 @@ export async function saveAllProducts(products: Product[]): Promise<{
   }
 }
 
-export function getPublishedProducts(products: Product[]): Product[] {
+export function getPublishedProducts(
+  products: Product[],
+  section?: CatalogSection
+): Product[] {
   return products
-    .filter((p) => p.published)
+    .filter((p) => p.published && (section ? getProductSection(p) === section : true))
     .sort((a, b) => b.trendScore - a.trendScore);
 }

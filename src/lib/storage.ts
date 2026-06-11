@@ -1,6 +1,7 @@
 import { parseApiJson } from "@/lib/apiClient";
 import { prepareProductsForSave } from "@/lib/productImport";
 import { shrinkProductImages } from "@/lib/productImages";
+import type { CatalogSection } from "./config";
 import type { Product, ScoutItem } from "./types";
 
 const SCOUT_KEY = "scs3d_scout_queue";
@@ -10,8 +11,10 @@ export function generateId(): string {
 }
 
 /** Public catalog — all devices see the same products */
-export async function fetchCatalogProducts(): Promise<Product[]> {
-  const res = await fetch("/api/products", { cache: "no-store" });
+export async function fetchCatalogProducts(
+  section: CatalogSection = "trending"
+): Promise<Product[]> {
+  const res = await fetch(`/api/products?section=${section}`, { cache: "no-store" });
   const data = await parseApiJson<{ products?: Product[]; error?: string }>(res);
   if (!res.ok) throw new Error(data.error || "Failed to load catalog");
   return data.products ?? [];

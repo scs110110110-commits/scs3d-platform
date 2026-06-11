@@ -1,4 +1,4 @@
-import { CATEGORIES, type Category } from "@/lib/config";
+import { CATALOG_SECTIONS, CATEGORIES, type CatalogSection, type Category } from "@/lib/config";
 import type { Product } from "@/lib/types";
 
 const MAX_SAVE_BYTES = 3_200_000;
@@ -40,6 +40,13 @@ export function stripBase64Images(products: Product[]): {
   return { products: cleaned, strippedImages };
 }
 
+function asSection(value: unknown): CatalogSection {
+  if (typeof value === "string" && CATALOG_SECTIONS.includes(value as CatalogSection)) {
+    return value as CatalogSection;
+  }
+  return "trending";
+}
+
 function asCategory(value: unknown): Category {
   if (typeof value === "string" && CATEGORIES.includes(value as Category)) {
     return value as Category;
@@ -74,6 +81,7 @@ export function normalizeProduct(raw: Partial<Product>, index: number): Product 
     featured: Boolean(raw.featured),
     socialProof: Number(raw.socialProof) || 100,
     createdAt: String(raw.createdAt || now),
+    section: asSection(raw.section),
   };
 }
 

@@ -1,6 +1,13 @@
 "use client";
 
-import { CATEGORIES, type Category, type TrendStatus } from "@/lib/config";
+import {
+  CATALOG_SECTIONS,
+  CATEGORIES,
+  SECTION_LABELS,
+  type CatalogSection,
+  type Category,
+  type TrendStatus,
+} from "@/lib/config";
 import type { Product } from "@/lib/types";
 import { generateId } from "@/lib/storage";
 import ProductImageManager from "./ProductImageManager";
@@ -22,6 +29,7 @@ export const emptyProduct = (): Product => ({
   featured: false,
   socialProof: 100,
   createdAt: new Date().toISOString(),
+  section: "trending",
 });
 
 interface ProductFormProps {
@@ -100,6 +108,21 @@ export default function ProductForm({
           product={product}
           onChange={(fields) => onChange({ ...product, ...fields })}
         />
+
+        <div>
+          <label className="mb-1 block text-sm text-zinc-400">Catalog Tab</label>
+          <select
+            value={product.section ?? "trending"}
+            onChange={(e) => set("section", e.target.value as CatalogSection)}
+            className="w-full rounded-xl border border-zinc-700 bg-zinc-800 px-4 py-2.5 text-white outline-none focus:border-cyan-500"
+          >
+            {CATALOG_SECTIONS.map((section) => (
+              <option key={section} value={section}>
+                {SECTION_LABELS[section]}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <div>
           <label className="mb-1 block text-sm text-zinc-400">Category</label>

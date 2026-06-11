@@ -47,7 +47,7 @@ export default function AdminAnalyticsPage() {
         <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold text-white">Site Analytics</h1>
-            <p className="text-zinc-400">Public page views — Home and Custom Request</p>
+            <p className="text-zinc-400">Public page views — Trending, Custom Solutions, Custom Request</p>
           </div>
           <button
             onClick={() => {

@@ -110,6 +110,7 @@ export default function ScoutPage() {
         featured: item.trendScore >= 85,
         socialProof: Math.floor(item.trendScore * 5),
         createdAt: new Date().toISOString(),
+        section: "trending",
       };
 
       await saveProducts([product, ...existing]);

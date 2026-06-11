@@ -1,4 +1,4 @@
-import type { Category, TrendStatus } from "./config";
+import type { CatalogSection, Category, TrendStatus } from "./config";
 
 export interface Product {
   id: string;
@@ -19,6 +19,7 @@ export interface Product {
   featured: boolean;
   socialProof: number;
   createdAt: string;
+  section: CatalogSection;
 }
 
 export interface ScoutItem {

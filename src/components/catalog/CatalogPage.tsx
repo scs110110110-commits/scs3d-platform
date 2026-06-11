@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import type { CatalogSection } from "@/lib/config";
+import { BRAND_TAGLINE, SOLUTIONS_TAGLINE } from "@/lib/config";
 import { fetchCatalogProducts } from "@/lib/storage";
 import type { Product } from "@/lib/types";
 import CatalogFilters from "./CatalogFilters";
@@ -8,7 +10,22 @@ import CatalogHero from "./CatalogHero";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
 
-export default function CatalogPage() {
+const HERO_COPY: Record<CatalogSection, { label: string; description: string }> = {
+  trending: {
+    label: "Trending Catalog",
+    description: BRAND_TAGLINE,
+  },
+  solutions: {
+    label: "Custom Solutions",
+    description: SOLUTIONS_TAGLINE,
+  },
+};
+
+interface CatalogPageProps {
+  section?: CatalogSection;
+}
+
+export default function CatalogPage({ section = "trending" }: CatalogPageProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [category, setCategory] = useState("all");
   const [search, setSearch] = useState("");
@@ -16,12 +33,16 @@ export default function CatalogPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const hero = HERO_COPY[section];
+
   useEffect(() => {
-    fetchCatalogProducts()
+    setLoading(true);
+    setError("");
+    fetchCatalogProducts(section)
       .then(setProducts)
       .catch((err) => setError(err instanceof Error ? err.message : "Load failed"))
       .finally(() => setLoading(false));
-  }, []);
+  }, [section]);
 
   const filtered = useMemo(() => {
     let list = products;
@@ -38,9 +59,14 @@ export default function CatalogPage() {
     return list;
   }, [products, category, search]);
 
+  const emptyMessage =
+    section === "solutions"
+      ? "No custom solutions yet — check back soon."
+      : "No products found.";
+
   return (
     <>
-      <CatalogHero />
+      <CatalogHero label={hero.label} description={hero.description} />
 
       <div id="catalog" className="page-wrap pb-10 pt-4">
         <CatalogFilters
@@ -55,7 +81,7 @@ export default function CatalogPage() {
         ) : error ? (
           <div className="py-10 text-center text-sm text-red-400">{error}</div>
         ) : filtered.length === 0 ? (
-          <div className="py-10 text-center text-sm text-zinc-600">No products found.</div>
+          <div className="py-10 text-center text-sm text-zinc-600">{emptyMessage}</div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {filtered.map((product) => (

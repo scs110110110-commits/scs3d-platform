@@ -3,7 +3,7 @@ import { normalizePagePath, recordPageView } from "@/lib/analyticsStore";
 
 export const dynamic = "force-dynamic";
 
-const PUBLIC_PATHS = new Set(["/", "/custom"]);
+const PUBLIC_PATHS = new Set(["/", "/solutions", "/custom"]);
 
 export async function POST(request: Request) {
   try {

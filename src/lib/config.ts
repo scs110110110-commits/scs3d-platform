@@ -5,6 +5,17 @@ export const BRAND_URL = "scs3d.com";
 export const BRAND_TAGLINE =
   "Professional 3D printing and custom CAD design — browse trending prints or bring your own idea.";
 
+export const SOLUTIONS_TAGLINE =
+  "Real customer designs and prints we've brought to life — custom CAD, personalized gifts, and one-off builds.";
+
+export const CATALOG_SECTIONS = ["trending", "solutions"] as const;
+export type CatalogSection = (typeof CATALOG_SECTIONS)[number];
+
+export const SECTION_LABELS: Record<CatalogSection, string> = {
+  trending: "Trending",
+  solutions: "Custom Solutions",
+};
+
 export const CATEGORIES = [
   "Desk & Office",
   "Home & Decor",
