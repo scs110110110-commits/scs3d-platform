@@ -24,7 +24,7 @@ async function requireAdmin() {
   return true;
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   if (!(await requireAdmin())) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -38,10 +38,11 @@ export async function GET() {
 
   try {
     const products = await loadAllProducts();
+    const origin = new URL(request.url).origin;
     return NextResponse.json({
       success: true,
       count: products.length,
-      products: productsForClientResponse(products),
+      products: productsForClientResponse(products, origin),
     });
   } catch (err) {
     return NextResponse.json(

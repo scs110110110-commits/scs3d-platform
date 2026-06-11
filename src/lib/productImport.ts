@@ -126,25 +126,13 @@ export function prepareProductsForSave(products: Product[]): {
   products: Product[];
   warning?: string;
 } {
-  let prepared = products;
-  let bytes = estimateProductsBytes(prepared);
+  const bytes = estimateProductsBytes(products);
 
   if (bytes <= MAX_SAVE_BYTES) {
-    return { products: prepared };
-  }
-
-  const { products: stripped, strippedImages } = stripBase64Images(prepared);
-  prepared = stripped;
-  bytes = estimateProductsBytes(prepared);
-
-  if (bytes <= MAX_SAVE_BYTES) {
-    return {
-      products: prepared,
-      warning: `Uploaded photos were removed (${strippedImages} embedded images) — file was too large. Text saved; re-add image URLs in admin.`,
-    };
+    return { products };
   }
 
   throw new Error(
-    `JSON file is too large (${Math.round(bytes / 1024)} KB). Export without embedded photos, or use image URLs instead of uploaded files.`
+    `Catalog data too large (${Math.round(bytes / 1024)} KB). Save fewer products at once or shorten descriptions. Photos are stored separately and should not be removed.`
   );
 }

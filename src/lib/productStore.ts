@@ -4,6 +4,7 @@ import { getRedis, isKvConfigured } from "@/lib/kv";
 import {
   persistAllProductImages,
   productHasEmbeddedImages,
+  repairProductsFromImageStore,
 } from "@/lib/productImageStore";
 import type { Product } from "@/lib/types";
 
@@ -28,12 +29,22 @@ export async function loadAllProducts(): Promise<Product[]> {
   try {
     const data = await redis.get<Product[]>(PRODUCTS_KEY);
     if (data?.length) {
+      let updated = data;
+
       if (data.some(productHasEmbeddedImages)) {
-        const migrated = await persistAllProductImages(data);
-        await redis.set(PRODUCTS_KEY, migrated);
-        return migrated;
+        updated = await persistAllProductImages(data);
       }
-      return data;
+
+      const repaired = await repairProductsFromImageStore(updated);
+      if (repaired.changed) {
+        updated = repaired.products;
+      }
+
+      if (updated !== data) {
+        await redis.set(PRODUCTS_KEY, updated);
+      }
+
+      return updated;
     }
 
     const seed = await readSeedProducts();
@@ -57,9 +68,13 @@ export async function saveAllProducts(products: Product[]): Promise<{
   }
 
   try {
-    const stored = products.some(productHasEmbeddedImages)
-      ? await persistAllProductImages(products)
-      : products;
+    const repaired = await repairProductsFromImageStore(products);
+    let stored = repaired.products;
+
+    if (stored.some(productHasEmbeddedImages)) {
+      stored = await persistAllProductImages(stored);
+    }
+
     await redis.set(PRODUCTS_KEY, stored);
     return { ok: true };
   } catch (err) {

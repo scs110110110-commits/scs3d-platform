@@ -20,6 +20,20 @@ export default function ProductImageCarousel({
   const hasMultiple = images.length > 1;
   const current = images[index] ?? product.imageUrl;
 
+  if (!current) {
+    return (
+      <div
+        className={`flex items-center justify-center bg-zinc-800 text-zinc-500 ${
+          variant === "modal"
+            ? "min-h-[12rem] px-4 py-8 text-sm"
+            : "aspect-square text-xs"
+        }`}
+      >
+        Photo missing — re-upload in admin
+      </div>
+    );
+  }
+
   function goPrev(e: React.MouseEvent) {
     e.stopPropagation();
     setIndex((i) => (i - 1 + images.length) % images.length);

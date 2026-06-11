@@ -1,5 +1,6 @@
 import { getRedis } from "@/lib/kv";
 import { galleryToProductFields, getProductImages } from "@/lib/productImages";
+import { toAbsoluteUrl } from "@/lib/siteUrl";
 import type { Product } from "@/lib/types";
 
 const IMAGE_PREFIX = "scs3d:catalog:img";
@@ -17,14 +18,24 @@ export function isDataUrl(value: string): boolean {
 }
 
 export function isCatalogImageUrl(value: string): boolean {
-  return value.startsWith("/api/catalog-image/");
+  return value.startsWith("/api/catalog-image/") || value.includes("/api/catalog-image/");
 }
 
-export function productsForClientResponse(products: Product[]): Product[] {
+export function productsForClientResponse(products: Product[], origin?: string): Product[] {
   return products.map((product) => {
     const gallery = getProductImages(product);
     const urls = gallery.map((img, index) => {
-      if (isDataUrl(img)) return catalogImageUrl(product.id, index);
+      if (isDataUrl(img)) {
+        return toAbsoluteUrl(catalogImageUrl(product.id, index), origin);
+      }
+      if (isCatalogImageUrl(img)) {
+        const path = img.startsWith("http")
+          ? new URL(img).pathname
+          : img.startsWith("/")
+            ? img
+            : catalogImageUrl(product.id, index);
+        return toAbsoluteUrl(path, origin);
+      }
       return img;
     });
     return { ...product, ...galleryToProductFields(urls) };
@@ -69,7 +80,7 @@ export async function loadProductImageData(
     return img;
   }
 
-  return img;
+  return null;
 }
 
 export async function persistProductImages(product: Product): Promise<Product> {
@@ -81,6 +92,9 @@ export async function persistProductImages(product: Product): Promise<Product> {
     if (isDataUrl(img)) {
       await saveProductImage(product.id, index, img);
       urls.push(catalogImageUrl(product.id, index));
+    } else if (isCatalogImageUrl(img)) {
+      const path = img.startsWith("http") ? new URL(img).pathname : img;
+      urls.push(path);
     } else if (img) {
       urls.push(img);
     }
@@ -96,4 +110,50 @@ export async function persistAllProductImages(products: Product[]): Promise<Prod
 export function productHasEmbeddedImages(product: Product): boolean {
   if (isDataUrl(product.imageUrl)) return true;
   return (product.images ?? []).some(isDataUrl);
+}
+
+export async function repairProductsFromImageStore(
+  products: Product[]
+): Promise<{ products: Product[]; changed: boolean }> {
+  const redis = getRedis();
+  if (!redis) return { products, changed: false };
+
+  let keys: string[] = [];
+  try {
+    keys = await redis.keys(`${IMAGE_PREFIX}:*`);
+  } catch {
+    return { products, changed: false };
+  }
+
+  const byProduct = new Map<string, number[]>();
+  for (const key of keys) {
+    const prefix = `${IMAGE_PREFIX}:`;
+    if (!key.startsWith(prefix)) continue;
+    const rest = key.slice(prefix.length);
+    const colon = rest.lastIndexOf(":");
+    if (colon < 0) continue;
+    const productId = rest.slice(0, colon);
+    const index = Number(rest.slice(colon + 1));
+    if (!productId || !Number.isInteger(index) || index < 0) continue;
+    const list = byProduct.get(productId) ?? [];
+    list.push(index);
+    byProduct.set(productId, list);
+  }
+
+  if (!byProduct.size) return { products, changed: false };
+
+  let changed = false;
+  const repaired = products.map((product) => {
+    const indices = byProduct.get(product.id);
+    if (!indices?.length) return product;
+
+    const gallery = getProductImages(product);
+    if (gallery.length > 0) return product;
+
+    const urls = [...new Set(indices)].sort((a, b) => a - b).map((i) => catalogImageUrl(product.id, i));
+    changed = true;
+    return { ...product, ...galleryToProductFields(urls) };
+  });
+
+  return { products: repaired, changed };
 }
