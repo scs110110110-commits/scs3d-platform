@@ -1,6 +1,10 @@
 import { readFile } from "fs/promises";
 import path from "path";
 import { getRedis, isKvConfigured } from "@/lib/kv";
+import {
+  persistAllProductImages,
+  productHasEmbeddedImages,
+} from "@/lib/productImageStore";
 import type { Product } from "@/lib/types";
 
 const PRODUCTS_KEY = "scs3d:catalog:products";
@@ -23,7 +27,14 @@ export async function loadAllProducts(): Promise<Product[]> {
 
   try {
     const data = await redis.get<Product[]>(PRODUCTS_KEY);
-    if (data?.length) return data;
+    if (data?.length) {
+      if (data.some(productHasEmbeddedImages)) {
+        const migrated = await persistAllProductImages(data);
+        await redis.set(PRODUCTS_KEY, migrated);
+        return migrated;
+      }
+      return data;
+    }
 
     const seed = await readSeedProducts();
     if (seed.length) {
@@ -46,7 +57,10 @@ export async function saveAllProducts(products: Product[]): Promise<{
   }
 
   try {
-    await redis.set(PRODUCTS_KEY, products);
+    const stored = products.some(productHasEmbeddedImages)
+      ? await persistAllProductImages(products)
+      : products;
+    await redis.set(PRODUCTS_KEY, stored);
     return { ok: true };
   } catch (err) {
     const message = err instanceof Error ? err.message : "Redis save failed";

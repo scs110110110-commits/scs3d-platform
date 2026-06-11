@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { ADMIN_COOKIE, verifyAdminToken } from "@/lib/adminAuth";
 import {
-  capProductsForResponse,
-  parseProductsJson,
-  prepareProductsForSave,
-} from "@/lib/productImport";
+  persistAllProductImages,
+  productsForClientResponse,
+} from "@/lib/productImageStore";
+import { parseProductsJson, prepareProductsForSave } from "@/lib/productImport";
 import {
   isProductStoreConfigured,
   loadAllProducts,
@@ -38,12 +38,10 @@ export async function GET() {
 
   try {
     const products = await loadAllProducts();
-    const capped = capProductsForResponse(products);
     return NextResponse.json({
       success: true,
-      count: capped.products.length,
-      products: capped.products,
-      warning: capped.warning,
+      count: products.length,
+      products: productsForClientResponse(products),
     });
   } catch (err) {
     return NextResponse.json(
@@ -79,7 +77,8 @@ export async function PUT(request: Request) {
       products = list;
     }
 
-    const prepared = prepareProductsForSave(products);
+    const externalized = await persistAllProductImages(products);
+    const prepared = prepareProductsForSave(externalized);
     const saved = await saveAllProducts(prepared.products);
 
     if (!saved.ok) {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { capProductsForResponse } from "@/lib/productImport";
+import { productsForClientResponse } from "@/lib/productImageStore";
 import {
   getPublishedProducts,
   isProductStoreConfigured,
@@ -19,12 +19,10 @@ export async function GET() {
   try {
     const products = await loadAllProducts();
     const published = getPublishedProducts(products);
-    const capped = capProductsForResponse(published);
     return NextResponse.json({
       success: true,
-      count: capped.products.length,
-      products: capped.products,
-      warning: capped.warning,
+      count: published.length,
+      products: productsForClientResponse(published),
     });
   } catch (err) {
     return NextResponse.json(
