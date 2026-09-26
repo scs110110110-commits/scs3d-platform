@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Outfit } from "next/font/google";
+import GoogleTags from "@/components/analytics/GoogleTags";
 import JsonLd from "@/components/seo/JsonLd";
 import { getLocalBusinessJsonLd, SEO_DESCRIPTION, SEO_KEYWORDS, SEO_TITLE, SITE_URL } from "@/lib/seo";
 import "./globals.css";
@@ -66,6 +67,7 @@ export default function RootLayout({
       className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col bg-[var(--background)] text-[var(--foreground)]">
+        <GoogleTags />
         <JsonLd data={getLocalBusinessJsonLd()} />
         {children}
       </body>

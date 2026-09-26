@@ -25,11 +25,14 @@ export const SEO_KEYWORDS = [
 export function getLocalBusinessJsonLd() {
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": ["LocalBusiness", "ProfessionalService"],
     name: BRAND_NAME,
+    alternateName: "SCS 3D Printing",
     description: SEO_DESCRIPTION,
     url: SITE_URL,
     telephone: `+${WHATSAPP_NUMBER}`,
+    email: "ssuadiye@gmail.com",
+    image: `${SITE_URL}/brand/scs3d-logo.png`,
     address: {
       "@type": "PostalAddress",
       addressLocality: "Kitchener",
@@ -45,15 +48,40 @@ export function getLocalBusinessJsonLd() {
       { "@type": "City", name: "Kitchener" },
       { "@type": "City", name: "Waterloo" },
       { "@type": "City", name: "Cambridge" },
+      { "@type": "AdministrativeArea", name: "Ontario" },
       { "@type": "Country", name: "Canada" },
     ],
     priceRange: "$$",
+    currenciesAccepted: "CAD",
+    paymentAccepted: "Cash, E-Transfer, Credit Card",
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
       opens: "09:00",
       closes: "18:00",
     },
-    sameAs: [`https://${BRAND_URL}`],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "3D printing & custom CAD",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Custom 3D printing",
+            description: "Made-to-order PLA/PETG prints from your idea or file",
+          },
+        },
+        {
+          "@type": "Offer",
+          itemOffered: {
+            "@type": "Service",
+            name: "Custom CAD design",
+            description: "Personalized products with name, logo, or photo lithophane",
+          },
+        },
+      ],
+    },
+    sameAs: [`https://${BRAND_URL}`, `https://www.${BRAND_URL}`],
   };
 }

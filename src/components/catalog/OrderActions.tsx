@@ -3,6 +3,7 @@
 import type { Product } from "@/lib/types";
 import { openOrderEmail, openWhatsAppOrder } from "@/lib/whatsapp";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
+import { trackLead } from "@/components/analytics/GoogleTags";
 
 interface OrderActionsProps {
   product: Pick<Product, "title" | "material" | "category" | "shortDescription">;
@@ -10,6 +11,16 @@ interface OrderActionsProps {
 }
 
 export default function OrderActions({ product, variant = "card" }: OrderActionsProps) {
+  function onWhatsApp() {
+    trackLead("whatsapp", product.title);
+    openWhatsAppOrder(product);
+  }
+
+  function onEmail() {
+    trackLead("email", product.title);
+    openOrderEmail(product);
+  }
+
   if (variant === "compact") {
     const compactBtn =
       "inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition active:scale-[0.98]";
@@ -18,7 +29,7 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
       <div className="flex flex-wrap gap-1.5">
         <button
           type="button"
-          onClick={() => openWhatsAppOrder(product)}
+          onClick={onWhatsApp}
           className={`${compactBtn} bg-zinc-800 text-zinc-200 hover:bg-zinc-700`}
         >
           <WhatsAppIcon className="h-3.5 w-3.5" />
@@ -26,7 +37,7 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
         </button>
         <button
           type="button"
-          onClick={() => openOrderEmail(product)}
+          onClick={onEmail}
           className={`${compactBtn} bg-zinc-800 text-emerald-400 hover:bg-zinc-700`}
         >
           Email
@@ -51,7 +62,7 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
     <div className="flex flex-wrap gap-1.5">
       <button
         type="button"
-        onClick={() => openWhatsAppOrder(product)}
+        onClick={onWhatsApp}
         className={`${compactBtn} bg-[var(--foreground)] text-white hover:opacity-90`}
       >
         <WhatsAppIcon className="h-3 w-3" />
@@ -59,7 +70,7 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
       </button>
       <button
         type="button"
-        onClick={() => openOrderEmail(product)}
+        onClick={onEmail}
         className={`${compactBtn} border border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--accent)] hover:bg-[var(--accent-soft)]`}
       >
         Email

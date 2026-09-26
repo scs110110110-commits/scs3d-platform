@@ -41,6 +41,8 @@ export default function CustomRequestForm() {
     }
     if (!validatePhone()) return;
 
+    const { trackLead } = await import("@/components/analytics/GoogleTags");
+    trackLead("whatsapp", "custom_request");
     openCustomWhatsAppRequest({ name, phone, email, idea, dimensions });
     setSuccess(true);
     setError("");
@@ -79,6 +81,9 @@ export default function CustomRequestForm() {
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to send email.");
+
+      const { trackLead } = await import("@/components/analytics/GoogleTags");
+      trackLead("email", "custom_request");
 
       setSuccess(true);
       setName("");
