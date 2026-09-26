@@ -14,8 +14,8 @@ export default function AdminHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-800/40 bg-black/90 backdrop-blur-md">
-      <div className="page-wrap flex items-center justify-between py-2">
+    <header className="sticky top-0 z-40 border-b border-zinc-800/50 bg-[#0a0a0a]/90 backdrop-blur-md">
+      <div className="page-wrap flex items-center justify-between py-2.5">
         <div className="flex items-center gap-3">
           <Logo size="sm" />
           <span className="hidden text-[10px] text-zinc-600 sm:inline">Admin · 1h session</span>

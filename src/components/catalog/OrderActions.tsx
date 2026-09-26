@@ -12,14 +12,14 @@ interface OrderActionsProps {
 export default function OrderActions({ product, variant = "card" }: OrderActionsProps) {
   if (variant === "compact") {
     const compactBtn =
-      "inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11px] font-semibold transition";
+      "inline-flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-[11px] font-semibold transition active:scale-[0.98]";
 
     return (
       <div className="flex flex-wrap gap-1.5">
         <button
           type="button"
           onClick={() => openWhatsAppOrder(product)}
-          className={`${compactBtn} bg-zinc-800/80 text-zinc-300 hover:bg-zinc-800`}
+          className={`${compactBtn} bg-zinc-800 text-zinc-200 hover:bg-zinc-700`}
         >
           <WhatsAppIcon className="h-3.5 w-3.5" />
           WhatsApp
@@ -27,7 +27,7 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
         <button
           type="button"
           onClick={() => openOrderEmail(product)}
-          className={`${compactBtn} bg-zinc-800/80 text-cyan-600/90 hover:bg-zinc-800`}
+          className={`${compactBtn} bg-zinc-800 text-emerald-400 hover:bg-zinc-700`}
         >
           Email
         </button>
@@ -38,21 +38,21 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
           title="Coming soon"
           className={`${compactBtn} cursor-not-allowed border border-zinc-700 bg-zinc-800/60 text-zinc-500`}
         >
-          Online <span className="font-normal opacity-70">(Coming Soon)</span>
+          Online <span className="font-normal opacity-70">(Soon)</span>
         </button>
       </div>
     );
   }
 
   const compactBtn =
-    "inline-flex flex-1 items-center justify-center gap-1 rounded-lg px-1.5 py-1.5 text-[10px] font-semibold leading-tight transition";
+    "inline-flex flex-1 items-center justify-center gap-1 rounded-lg px-1.5 py-2 text-[10px] font-semibold leading-tight transition active:scale-[0.98]";
 
   return (
-    <div className="flex flex-wrap gap-1">
+    <div className="flex flex-wrap gap-1.5">
       <button
         type="button"
         onClick={() => openWhatsAppOrder(product)}
-        className={`${compactBtn} bg-zinc-800/60 text-zinc-300 hover:bg-zinc-800`}
+        className={`${compactBtn} bg-[var(--foreground)] text-white hover:opacity-90`}
       >
         <WhatsAppIcon className="h-3 w-3" />
         WhatsApp
@@ -60,7 +60,7 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
       <button
         type="button"
         onClick={() => openOrderEmail(product)}
-        className={`${compactBtn} bg-zinc-800/60 text-cyan-600/90 hover:bg-zinc-800`}
+        className={`${compactBtn} border border-[var(--border-strong)] bg-[var(--surface-2)] text-[var(--accent)] hover:bg-[var(--accent-soft)]`}
       >
         Email
       </button>
@@ -69,7 +69,7 @@ export default function OrderActions({ product, variant = "card" }: OrderActions
         disabled
         aria-disabled="true"
         title="Coming soon"
-        className={`${compactBtn} cursor-not-allowed border border-zinc-700 bg-zinc-800/60 text-zinc-500`}
+        className={`${compactBtn} cursor-not-allowed border border-[var(--border)] text-[var(--muted-2)]`}
       >
         Online <span className="font-normal opacity-70">(Soon)</span>
       </button>

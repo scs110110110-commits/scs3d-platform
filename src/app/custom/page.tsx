@@ -15,23 +15,36 @@ export default function CustomPage() {
     <PublicShell>
       <Header />
       <main className="flex-1">
-        <section className="border-b border-zinc-800/30 bg-black/40 backdrop-blur-[2px]">
-          <div className="page-wrap py-4 sm:py-5">
-            <p className="mb-1 text-[10px] font-semibold uppercase tracking-widest text-cyan-500/80">
-              Custom Project
-            </p>
-            <h1 className="text-xl font-semibold tracking-tight text-zinc-100 sm:text-2xl">
-              Bring Your Idea to Life
-            </h1>
-            <p className="mt-1.5 max-w-xl text-sm text-zinc-500">
-              Describe your project and reach us via WhatsApp or email.
-            </p>
+        <section className="border-b border-[var(--border)]">
+          <div className="page-wrap grid gap-6 py-10 sm:py-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-12">
+            <div>
+              <p className="mb-3 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-[var(--accent)]">
+                SCS3D · Custom
+              </p>
+              <h1 className="text-balance text-[clamp(2rem,4.5vw,3.25rem)] font-extrabold leading-[1.08] tracking-[-0.03em] text-[var(--foreground)]">
+                Bring your idea to life
+              </h1>
+              <p className="mt-4 max-w-xl text-base leading-relaxed text-[var(--muted)]">
+                Describe the print, share dimensions, and reach us on WhatsApp or email — made to
+                order in Kitchener–Waterloo.
+              </p>
+            </div>
+            <aside className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow)]">
+              <p className="text-xs font-medium uppercase tracking-[0.16em] text-[var(--muted-2)]">
+                Typical turnaround
+              </p>
+              <p className="mt-2 text-lg font-semibold text-[var(--foreground)]">
+                Quote in hours · Print in days
+              </p>
+            </aside>
           </div>
         </section>
 
-        <section className="py-6 sm:py-8">
+        <section className="py-8 sm:py-10">
           <div className="page-wrap max-w-3xl">
-            <CustomRequestForm />
+            <div className="rounded-[1.75rem] border border-[var(--border)] bg-[var(--surface)] p-5 shadow-[var(--shadow)] sm:p-7">
+              <CustomRequestForm />
+            </div>
           </div>
         </section>
       </main>

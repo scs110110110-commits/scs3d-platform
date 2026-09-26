@@ -12,11 +12,11 @@ import ProductModal from "./ProductModal";
 
 const HERO_COPY: Record<CatalogSection, { label: string; description: string }> = {
   trending: {
-    label: "Trending Catalog",
+    label: "Trending prints",
     description: BRAND_TAGLINE,
   },
   solutions: {
-    label: "Custom Solutions",
+    label: "Custom solutions",
     description: SOLUTIONS_TAGLINE,
   },
 };
@@ -61,14 +61,14 @@ export default function CatalogPage({ section = "trending" }: CatalogPageProps) 
 
   const emptyMessage =
     section === "solutions"
-      ? "No custom solutions yet — check back soon."
-      : "No products found.";
+      ? "No custom solutions published yet — check back soon."
+      : "No products match this filter.";
 
   return (
     <>
       <CatalogHero label={hero.label} description={hero.description} />
 
-      <div id="catalog" className="page-wrap pb-10 pt-4">
+      <div id="catalog" className="page-wrap pb-14 pt-6 sm:pt-8">
         <CatalogFilters
           activeCategory={category}
           onCategoryChange={setCategory}
@@ -77,19 +77,40 @@ export default function CatalogPage({ section = "trending" }: CatalogPageProps) 
         />
 
         {loading ? (
-          <div className="py-10 text-center text-sm text-zinc-600">Loading catalog...</div>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div
+                key={i}
+                className="aspect-[3/4] animate-pulse rounded-2xl bg-[var(--surface-2)]"
+                style={{ animationDelay: `${i * 60}ms` }}
+              />
+            ))}
+          </div>
         ) : error ? (
-          <div className="py-10 text-center text-sm text-red-400">{error}</div>
+          <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-8 text-center text-sm text-red-700">
+            {error}
+          </div>
         ) : filtered.length === 0 ? (
-          <div className="py-10 text-center text-sm text-zinc-600">{emptyMessage}</div>
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] px-4 py-14 text-center">
+            <p className="text-base font-medium text-[var(--foreground)]">{emptyMessage}</p>
+            <p className="mt-2 text-sm text-[var(--muted)]">
+              Try another category, or{" "}
+              <a href="/custom" className="font-medium text-[var(--accent)] underline-offset-2 hover:underline">
+                request a custom build
+              </a>
+              .
+            </p>
+          </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {filtered.map((product) => (
-              <ProductCard
+            {filtered.map((product, index) => (
+              <div
                 key={product.id}
-                product={product}
-                onSelect={setSelected}
-              />
+                className="animate-[fadeUp_420ms_cubic-bezier(0.22,1,0.36,1)_both]"
+                style={{ animationDelay: `${Math.min(index, 10) * 45}ms` }}
+              >
+                <ProductCard product={product} onSelect={setSelected} />
+              </div>
             ))}
           </div>
         )}

@@ -10,44 +10,35 @@ interface ProductCardProps {
   onSelect?: (product: Product) => void;
 }
 
-const BADGE_STYLES: Record<string, string> = {
-  emerald: "bg-emerald-500/15 text-emerald-300 border-emerald-500/20",
-  orange: "bg-orange-500/15 text-orange-300 border-orange-500/20",
-  red: "bg-red-500/15 text-red-300 border-red-500/20",
-  cyan: "bg-cyan-500/15 text-cyan-300 border-cyan-500/20",
-};
-
 export default function ProductCard({ product, onSelect }: ProductCardProps) {
   const badge = TREND_BADGES[product.status];
 
   return (
-    <article className="group flex flex-col overflow-hidden rounded-lg border border-zinc-800/50 bg-zinc-900/85 backdrop-blur-sm transition hover:border-zinc-700/80">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-[var(--shadow)] transition duration-300 hover:-translate-y-0.5 hover:border-[var(--border-strong)]">
       <div className="relative">
         <ProductImageCarousel
           product={product}
           variant="card"
           onImageClick={() => onSelect?.(product)}
         />
-        <span
-          className={`pointer-events-none absolute left-2 top-2 z-10 rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide backdrop-blur-md ${BADGE_STYLES[badge.color]}`}
-        >
+        <span className="pointer-events-none absolute left-2 top-2 z-10 rounded-md bg-white/90 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--foreground)] backdrop-blur-sm">
           {badge.label}
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-2.5">
-        <p className="mb-0.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+      <div className="flex flex-1 flex-col p-3 sm:p-3.5">
+        <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-[var(--muted-2)]">
           {product.category}
         </p>
-        <h3 className="mb-1 line-clamp-1 text-xs font-medium tracking-tight text-zinc-200">
+        <h3 className="mb-1 line-clamp-2 text-sm font-semibold tracking-tight text-[var(--foreground)]">
           {product.title}
         </h3>
-        <p className="mb-2 line-clamp-2 flex-1 text-[11px] leading-relaxed text-zinc-400">
-          {product.shortDescription}
+        <p className="mb-3 line-clamp-2 flex-1 text-xs leading-relaxed text-[var(--muted)]">
+          {product.shortDescription || product.description}
         </p>
 
-        <div className="mb-2 flex items-center justify-between border-t border-zinc-800/80 pt-2 text-[10px] text-zinc-500">
-          <span>{product.material}</span>
+        <div className="mb-3 flex items-center justify-between border-t border-[var(--border)] pt-2.5 font-mono text-[10px] text-[var(--muted-2)]">
+          <span>{product.material || "PLA"}</span>
           <span>{product.socialProof.toLocaleString()} views</span>
         </div>
 

@@ -6,6 +6,9 @@ import WhatsAppIcon from "@/components/WhatsAppIcon";
 
 type ContactMethod = "whatsapp" | "email";
 
+const fieldClass =
+  "w-full rounded-xl border border-[var(--border-strong)] bg-[var(--background)] px-3.5 py-2.5 text-sm text-[var(--foreground)] outline-none transition placeholder:text-[var(--muted-2)] focus:border-[var(--accent)]";
+
 export default function CustomRequestForm() {
   const [method, setMethod] = useState<ContactMethod>("whatsapp");
   const [name, setName] = useState("");
@@ -102,7 +105,7 @@ export default function CustomRequestForm() {
 
   return (
     <>
-      <div className="mb-4 flex rounded-lg border border-zinc-800/60 bg-zinc-900/40 p-0.5">
+      <div className="mb-5 flex rounded-xl border border-[var(--border)] bg-[var(--surface-2)] p-1">
         <button
           type="button"
           onClick={() => {
@@ -110,10 +113,10 @@ export default function CustomRequestForm() {
             setError("");
             setSuccess(false);
           }}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition ${
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2.5 text-sm font-medium transition ${
             method === "whatsapp"
-              ? "bg-emerald-600/90 text-white"
-              : "text-zinc-500 hover:text-zinc-300"
+              ? "bg-[var(--accent)] text-white shadow-sm"
+              : "text-[var(--muted)] hover:text-[var(--foreground)]"
           }`}
         >
           <WhatsAppIcon className="h-4 w-4" />
@@ -126,20 +129,20 @@ export default function CustomRequestForm() {
             setError("");
             setSuccess(false);
           }}
-          className={`flex flex-1 items-center justify-center gap-1.5 rounded-md py-2 text-xs font-medium transition ${
+          className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg py-2.5 text-sm font-medium transition ${
             method === "email"
-              ? "bg-cyan-600/90 text-white"
-              : "text-zinc-500 hover:text-zinc-300"
+              ? "bg-[var(--foreground)] text-white shadow-sm"
+              : "text-[var(--muted)] hover:text-[var(--foreground)]"
           }`}
         >
-          ✉️ Email
+          Email
         </button>
       </div>
 
-      <div className={`grid gap-4 ${method === "email" ? "sm:grid-cols-2" : ""}`}>
+      <div className={`grid gap-5 ${method === "email" ? "sm:grid-cols-2" : ""}`}>
         {method === "email" && (
           <div>
-            <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-zinc-800 bg-zinc-900/30 px-4 py-8 transition hover:border-zinc-700">
+            <label className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-[var(--border-strong)] bg-[var(--background)] px-4 py-10 transition hover:border-[var(--accent)]">
               <input
                 type="file"
                 accept="image/*"
@@ -147,11 +150,8 @@ export default function CustomRequestForm() {
                 className="hidden"
                 onChange={(e) => handleFiles(e.target.files)}
               />
-              <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-cyan-500/10 text-lg">
-                📷
-              </div>
-              <p className="text-sm font-medium text-zinc-300">Upload photos</p>
-              <p className="mt-0.5 text-xs text-zinc-600">JPG, PNG — up to 6</p>
+              <p className="text-sm font-semibold text-[var(--foreground)]">Upload photos</p>
+              <p className="mt-1 text-xs text-[var(--muted)]">JPG, PNG — up to 6</p>
             </label>
 
             {images.length > 0 && (
@@ -159,7 +159,7 @@ export default function CustomRequestForm() {
                 {images.map((img, i) => (
                   <div
                     key={`${img.name}-${i}`}
-                    className="group relative aspect-square overflow-hidden rounded-xl border border-zinc-800"
+                    className="group relative aspect-square overflow-hidden rounded-xl border border-[var(--border)]"
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
@@ -172,7 +172,7 @@ export default function CustomRequestForm() {
                       onClick={() =>
                         setImages((prev) => prev.filter((_, idx) => idx !== i))
                       }
-                      className="absolute inset-0 flex items-center justify-center bg-black/60 text-white opacity-0 transition group-hover:opacity-100"
+                      className="absolute inset-0 flex items-center justify-center bg-black/55 text-sm text-white opacity-0 transition group-hover:opacity-100"
                     >
                       Remove
                     </button>
@@ -183,75 +183,81 @@ export default function CustomRequestForm() {
           </div>
         )}
 
-        <div className="space-y-3">
+        <div className="space-y-3.5">
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="mb-1 block text-xs text-zinc-500">Name</label>
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">Name</label>
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-zinc-600"
+                className={fieldClass}
                 placeholder="Your name"
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs text-zinc-500">Phone *</label>
+              <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
+                Phone *
+              </label>
               <input
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
-                className="w-full rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-zinc-600"
+                className={fieldClass}
                 placeholder="+1 519 555 1234"
               />
             </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-zinc-500">
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
               Email {method === "email" && "*"}
             </label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-zinc-600"
+              className={fieldClass}
               placeholder="you@email.com"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-zinc-500">Describe your idea *</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
+              Describe your idea *
+            </label>
             <textarea
               value={idea}
               onChange={(e) => setIdea(e.target.value)}
               rows={4}
               placeholder="What do you want printed?"
-              className="w-full resize-none rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-zinc-600"
+              className={`${fieldClass} resize-none`}
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-xs text-zinc-500">Dimensions (optional)</label>
+            <label className="mb-1.5 block text-xs font-medium text-[var(--muted)]">
+              Dimensions (optional)
+            </label>
             <input
               value={dimensions}
               onChange={(e) => setDimensions(e.target.value)}
               placeholder="e.g. 10 x 5 x 3 cm"
-              className="w-full rounded-lg border border-zinc-800 bg-zinc-900/60 px-3 py-2 text-sm text-zinc-200 outline-none focus:border-zinc-600"
+              className={fieldClass}
             />
           </div>
 
           {error && (
-            <p className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+            <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
               {error}
             </p>
           )}
 
           {success && (
-            <p className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-400">
+            <p className="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
               {method === "whatsapp"
                 ? "WhatsApp opened with your request. Send the message to complete."
-                : "Email sent successfully! We'll get back to you soon."}
+                : "Email sent successfully. We'll get back to you soon."}
             </p>
           )}
 
@@ -259,20 +265,16 @@ export default function CustomRequestForm() {
             type="button"
             onClick={handleSubmit}
             disabled={submitting}
-            className={`flex w-full items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium text-white transition disabled:opacity-50 ${
-              method === "whatsapp"
-                ? "bg-emerald-600/90 hover:bg-emerald-600"
-                : "bg-cyan-600/90 hover:bg-cyan-600"
-            }`}
+            className="btn-primary w-full disabled:opacity-50"
           >
             {submitting
-              ? "Sending..."
+              ? "Sending…"
               : method === "whatsapp"
                 ? "Continue on WhatsApp"
                 : "Send via Email"}
           </button>
 
-          <p className="text-center text-xs text-zinc-600">
+          <p className="text-center text-xs text-[var(--muted-2)]">
             {method === "whatsapp"
               ? "Opens WhatsApp with your project details — no photos needed."
               : "Photos are attached and sent directly to our team."}

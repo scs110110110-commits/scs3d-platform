@@ -23,10 +23,10 @@ export default function ProductImageCarousel({
   if (!current) {
     return (
       <div
-        className={`flex items-center justify-center bg-zinc-800 text-zinc-500 ${
+        className={`flex items-center justify-center ${
           variant === "modal"
-            ? "min-h-[12rem] px-4 py-8 text-sm"
-            : "aspect-square text-xs"
+            ? "min-h-[12rem] bg-zinc-900 px-4 py-8 text-sm text-zinc-500"
+            : "aspect-square bg-[var(--surface-2)] text-xs text-[var(--muted-2)]"
         }`}
       >
         Photo missing — re-upload in admin
@@ -106,7 +106,7 @@ export default function ProductImageCarousel({
 
   return (
     <div
-      className={`group relative aspect-square overflow-hidden bg-zinc-800 ${onImageClick ? "cursor-pointer" : ""}`}
+      className={`group relative aspect-square overflow-hidden bg-[var(--surface-2)] ${onImageClick ? "cursor-pointer" : ""}`}
       onClick={onImageClick}
       role={onImageClick ? "button" : undefined}
       tabIndex={onImageClick ? 0 : undefined}

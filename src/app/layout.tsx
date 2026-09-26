@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Outfit } from "next/font/google";
 import JsonLd from "@/components/seo/JsonLd";
 import { getLocalBusinessJsonLd, SEO_DESCRIPTION, SEO_KEYWORDS, SEO_TITLE, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 const geistMono = Geist_Mono({
@@ -62,9 +63,9 @@ export default function RootLayout({
   return (
     <html
       lang="en-CA"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      className={`${outfit.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-black text-zinc-100">
+      <body className="flex min-h-full flex-col bg-[var(--background)] text-[var(--foreground)]">
         <JsonLd data={getLocalBusinessJsonLd()} />
         {children}
       </body>
