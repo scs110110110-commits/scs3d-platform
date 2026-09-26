@@ -17,7 +17,7 @@ export default function Header() {
     <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[color-mix(in_srgb,var(--background)_88%,transparent)] backdrop-blur-md">
       <div className="page-wrap flex items-center justify-between gap-4 py-3 sm:py-3.5">
         <Link href="/" className="shrink-0" aria-label="SCS3D home">
-          <Logo size="sm" className="brightness-0" />
+          <Logo size="sm" />
         </Link>
 
         <nav className="flex items-center gap-0.5 sm:gap-1">

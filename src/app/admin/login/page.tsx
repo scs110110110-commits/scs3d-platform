@@ -46,7 +46,7 @@ function LoginForm() {
         className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-zinc-900 p-8"
       >
         <div className="mb-6 flex flex-col items-center gap-2">
-          <Logo size="xl" className="mx-auto" />
+          <Logo size="xl" className="mx-auto brightness-0 invert" />
           <p className="text-xs text-zinc-600">Admin · session expires after 1 hour</p>
         </div>
 
